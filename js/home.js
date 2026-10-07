@@ -21,7 +21,7 @@ async function loadPostFromLink() {
     return;
   }
 
-  await Firebase.setPost(post.id, { shareCount: firebase.firestore.FieldValue.increment(1) });
+  await Firebase.countPostShare(post.id);
 
   await PostModal.open(post.authorId, post.id);
 

@@ -17,7 +17,7 @@ const Firebase = (() => {
   const db = firebase.firestore();
   const auth = firebase.auth();
 
-  let unsubscribe = { posts: null, comments: null, user: null, users: null };
+  let unsubscribe = { posts: null, comments: null, users: null, user: null };
 
   globalThis.currentUser = null;
 
@@ -197,6 +197,7 @@ const Firebase = (() => {
         posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
         setPosts(posts);
+        PostModal.refresh();
       },
       (error) => {
         handleError(error);
@@ -238,7 +239,7 @@ const Firebase = (() => {
       handleError(error);
     }
   }
-  
+
   async function setPost(postId, data) {
     const postRef = db.collection("posts").doc(postId);
 
@@ -257,7 +258,6 @@ const Firebase = (() => {
     }
   }
 
-
   async function reactPost(postId, reactType) {
     const userId = currentUser.uid;
     const postRef = db.collection("posts").doc(postId);
@@ -265,35 +265,68 @@ const Firebase = (() => {
     try {
       const reactionsQS = await db.collection("reactions").where("postId", "==", postId).where("userId", "==", userId).get();
 
-      const reactionRef = !reactionsQS.empty ? reactionsQS.docs[0].ref : db.collection("reactions").doc();
+      const existingDoc = !reactionsQS.empty ? reactionsQS.docs[0] : null;
+      const reactionRef = existingDoc ? existingDoc.ref : db.collection("reactions").doc();
+      const prevReactType = existingDoc ? existingDoc.data().type : null;
 
-      await db.runTransaction(async (transaction) => {
-        const reactionDoc = await transaction.get(reactionRef);
-        const prevReactType = reactionDoc.exists ? reactionDoc.data().type : null;
-        const updates = {};
+      const batch = db.batch();
+      const updates = {};
 
-        if (prevReactType === reactType) {
-          transaction.delete(reactionRef);
-          updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(-1);
-        } else {
-          transaction.set(reactionRef, {
-            postId,
-            userId,
-            type: reactType,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          });
+      if (prevReactType === reactType) {
+        // Toggle off / remove reaction
+        batch.delete(reactionRef);
+        updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(-1);
+      } else {
+        // Add or update reaction
+        batch.set(reactionRef, {
+          postId: postId,
+          userId: userId,
+          type: reactType,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
 
-          if (prevReactType) {
-            updates[`reactions.${prevReactType}`] = firebase.firestore.FieldValue.increment(-1);
-          }
-
-          updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(1);
+        if (prevReactType) {
+          updates[`reactions.${prevReactType}`] = firebase.firestore.FieldValue.increment(-1);
         }
 
-        transaction.update(postRef, updates);
-      });
+        updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(1);
+      }
+
+      batch.update(postRef, updates);
+      await batch.commit();
 
       notify("Post reacted successfully.");
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function countPostShare(postId) {
+    const userId = currentUser.uid;
+    const postRef = db.collection("posts").doc(postId);
+
+    try {
+      const sharesQS = await db.collection("shares").where("postId", "==", postId).where("userId", "==", userId).get();
+
+      // If a share record already exists for this user and post, exit early
+      if (!sharesQS.empty) return;
+
+      const shareRef = db.collection("shares").doc();
+      const batch = db.batch();
+
+      batch.set(shareRef, {
+        postId: postId,
+        userId: userId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      batch.update(postRef, {
+        shareCount: firebase.firestore.FieldValue.increment(1),
+      });
+
+      await batch.commit();
+
+      notify("Share counted successfully.");
     } catch (error) {
       handleError(error);
     }
@@ -333,14 +366,21 @@ const Firebase = (() => {
       const postRef = db.collection("posts").doc(postId);
       const batch = db.batch();
 
-      const commentsSnapshot = await postRef.collection("comments").get();
+      // Query and delete documents in root collections where postId matches
+      const [commentsQS, reactionsQS, sharesQS] = await Promise.all([
+        db.collection("comments").where("postId", "==", postId).get(),
+        db.collection("reactions").where("postId", "==", postId).get(),
+        db.collection("shares").where("postId", "==", postId).get(),
+      ]);
 
-      commentsSnapshot.docs.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
+      commentsQS.docs.forEach((doc) => batch.delete(doc.ref));
+      reactionsQS.docs.forEach((doc) => batch.delete(doc.ref));
+      sharesQS.docs.forEach((doc) => batch.delete(doc.ref));
 
+      // Delete the post document itself
       batch.delete(postRef);
 
+      // Commit all deletions in a single batch
       await batch.commit();
 
       notify("Post deleted successfully.");
@@ -376,33 +416,35 @@ const Firebase = (() => {
     try {
       const reactionsQS = await db.collection("reactions").where("commentId", "==", commentId).where("userId", "==", userId).get();
 
-      const reactionRef = !reactionsQS.empty ? reactionsQS.docs[0].ref : db.collection("reactions").doc();
+      const existingDoc = !reactionsQS.empty ? reactionsQS.docs[0] : null;
+      const reactionRef = existingDoc ? existingDoc.ref : db.collection("reactions").doc();
+      const prevReactType = existingDoc ? existingDoc.data().type : null;
 
-      await db.runTransaction(async (transaction) => {
-        const reactionDoc = await transaction.get(reactionRef);
-        const prevReactType = reactionDoc.exists ? reactionDoc.data().type : null;
-        const updates = {};
+      const batch = db.batch();
+      const updates = {};
 
-        if (prevReactType === reactType) {
-          transaction.delete(reactionRef);
-          updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(-1);
-        } else {
-          transaction.set(reactionRef, {
-            commentId: commentId,
-            userId,
-            type: reactType,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          });
+      if (prevReactType === reactType) {
+        // Toggle off / remove reaction
+        batch.delete(reactionRef);
+        updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(-1);
+      } else {
+        // Add or update reaction
+        batch.set(reactionRef, {
+          commentId: commentId,
+          userId: userId,
+          type: reactType,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
 
-          if (prevReactType) {
-            updates[`reactions.${prevReactType}`] = firebase.firestore.FieldValue.increment(-1);
-          }
-
-          updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(1);
+        if (prevReactType) {
+          updates[`reactions.${prevReactType}`] = firebase.firestore.FieldValue.increment(-1);
         }
 
-        transaction.update(commentRef, updates);
-      });
+        updates[`reactions.${reactType}`] = firebase.firestore.FieldValue.increment(1);
+      }
+
+      batch.update(commentRef, updates);
+      await batch.commit();
 
       notify("Comment reacted successfully.");
     } catch (error) {
@@ -410,5 +452,5 @@ const Firebase = (() => {
     }
   }
 
-  return { initAuth, login, signup, logout, getUser, loadUsers, setUser, deleteUser, createPost, getPost, setPost, reactPost, commentPost, loadComments, reactComment };
+  return { initAuth, login, signup, logout, getUser, loadUsers, setUser, deleteUser, createPost, getPost, setPost, deletePost, reactPost, countPostShare, commentPost, loadComments, reactComment };
 })();

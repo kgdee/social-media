@@ -5,13 +5,19 @@ const PostModal = (() => {
 
   let currentPost = null;
 
+  function refresh() {
+    if (!currentPost) return;
+    currentPost = getPost(currentPost.id);
+    postCardContainer.innerHTML = PostCard.createHTML(currentPost);
+  }
+
   async function open(authorId, postId) {
-    currentPost = getPost(postId) || await Firebase.getPost(postId);
+    currentPost = getPost(postId) || (await Firebase.getPost(postId));
     const author = await Firebase.getUser(authorId);
 
     titleEl.textContent = `${getUserName(author)}'s post`;
 
-    postCardContainer.innerHTML = PostCard.createHTML(currentPost);
+    refresh();
 
     await CommentsSection.init(currentPost.id);
 
@@ -23,5 +29,5 @@ const PostModal = (() => {
     currentPost = null;
   }
 
-  return { open, close };
+  return { open, close, refresh };
 })();
