@@ -1,0 +1,164 @@
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.auth-page {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-page .logo {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  width: 40px;
+  height: 40px;
+}
+
+.hero-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #e4e6eb;
+  padding: 10px;
+  padding-left: 50px;
+}
+
+.hero-section .collage-img {
+  width: 400px;
+}
+
+.headline {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-top: 20px;
+}
+
+.headline span {
+  color: var(--primary);
+}
+
+.auth-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.auth-wrapper {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-wrapper .title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+}
+
+.auth-wrapper .title span {
+  color: var(--primary);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-login {
+  background-color: var(--fb-blue);
+  color: white;
+  border: none;
+  border-radius: 9999px; /* Pill shape */
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-login:hover {
+  background-color: #005ae6;
+}
+
+.forgot-link {
+  text-align: center;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.acc-link {
+  text-decoration: none;
+  color: var(--primary);
+  padding: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.credit-display {
+  position: absolute;
+  bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.meta-icon {
+  width: 24px;
+  height: auto;
+  fill: currentColor;
+}
+
+/* Medium screens (Tablets, up to 768px wide) */
+@media (max-width: 768px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-page .logo {
+    top: 10px;
+    left: 10px;
+  }
+
+  .hero-section {
+    display: none;
+  }
+  .content-area {
+    margin-left: 0;
+    margin-top: 40px; /* Space for absolute logo */
+  }
+  .headline {
+    font-size: 2.5rem;
+  }
+  .meta-footer {
+    position: relative;
+    margin-top: 40px;
+    bottom: auto;
+  }
+}
+
+/* Small screens (Phones, up to 480px wide) */
+@media (max-width: 480px) {
+}

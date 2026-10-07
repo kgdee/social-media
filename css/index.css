@@ -1,0 +1,18 @@
+.redirect-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.redirect-page .message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.redirect-page .message img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect - Social Media</title>
+    <link rel="icon" type="image/png" href="../favicon.png" />
+    <link href="../vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+    <script src="../vendor/firebasejs-10.10.0/firebase-app-compat.js" defer></script>
+    <script src="../vendor/firebasejs-10.10.0/firebase-auth-compat.js" defer></script>
+    <script src="../vendor/firebasejs-10.10.0/firebase-firestore-compat.js" defer></script>
+    <script src="../js/constants.js" defer></script>
+    <script src="../js/utils.js" defer></script>
+    <script src="../js/firebase.js" defer></script>
+    <script src="../js/toast.js" defer></script>
+    <script src="../js/main.js" defer></script>
+  </head>
+  <body>
+    <div class="app container auth-page">
+      <img src="../assets/images/logo.png" class="logo" />
+
+      <div class="hero-section">
+        <img src="../assets/images/collage.png" class="collage-img" />
+
+        <h1 class="headline">
+          Explore<br />
+          the things<br />
+          <span>you love.</span>
+        </h1>
+      </div>
+
+      <div class="auth-section">
+        <div class="auth-wrapper">
+          <h2 class="title">Sign up to <span>Connect</span></h2>
+
+          <form class="auth-form" onsubmit="signup(event)">
+            <input class="email-input" type="text" placeholder="Email address" required />
+            <input class="password-input" type="password" placeholder="Password (min. 6 chars)" required minlength="6" />
+            <button type="submit" class="button">Sign up</button>
+          </form>
+
+          <a href="#" class="acc-link">Already have an account? <span>Log in</span></a>
+        </div>
+
+        <div class="credit-display">
+          <img src="../assets/images/meta.png" class="meta-icon" />
+          Meta
+        </div>
+      </div>
+      
+      <div class="toast hidden"></div>
+    </div>
+  </body>
+</html>
