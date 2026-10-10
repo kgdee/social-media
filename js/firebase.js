@@ -38,24 +38,12 @@ const Firebase = (() => {
     currentUser = user;
     if (currentUser) {
       // User is signed in
-      changePage("home");
-
-      updateUI();
-
-      loadUser();
-      loadPosts();
+      initPage();
     } else {
       // User is signed out
       changePage("signup");
 
-      // Unsubscribe from real-time listener if exists
-      if (unsubscribe.posts) {
-        unsubscribe.user();
-        unsubscribe.user = null;
-
-        unsubscribe.posts();
-        unsubscribe.posts = null;
-      }
+      // Optional: Unsubscribe from real-time listener if exists
     }
   });
 
@@ -112,18 +100,18 @@ const Firebase = (() => {
     }
   }
 
-  function loadUser() {
+  function loadUser(userId) {
+    userId = userId || currentUser.uid;
+    const userRef = db.collection("users").doc(userId);
+
     if (unsubscribe.user) unsubscribe.user();
-
-    const userRef = db.collection("users").doc(currentUser.uid);
-
     unsubscribe.user = userRef.onSnapshot(
       (snapshot) => {
         if (snapshot.exists) {
           const docData = snapshot.data();
           const user = { id: snapshot.id, ...docData };
 
-          currentUser = { uid: currentUser.uid, email: currentUser.email, ...user };
+          currentUser = { uid: userId, email: currentUser.email, ...user };
           updateUI();
         }
       },
@@ -133,7 +121,6 @@ const Firebase = (() => {
 
   function loadUsers() {
     if (unsubscribe.users) unsubscribe.users();
-
     unsubscribe.users = db
       .collection("users")
       .orderBy("timestamp", "desc")
@@ -181,23 +168,22 @@ const Firebase = (() => {
     }
   }
 
-  function loadPosts() {
-    if (!currentUser) return;
-    if (unsubscribe.posts) unsubscribe.posts();
+  function loadPosts(userId, onLoaded) {
+    let postsRef = db.collection("posts");
 
-    // No Complex Queries Rule: Fetch all, sort in memory
-    unsubscribe.posts = db.collection(`posts`).onSnapshot(
+    if (userId) {
+      postsRef = postsRef.where("userId", "==", userId);
+    }
+
+    if (unsubscribe.posts) unsubscribe.posts();
+    unsubscribe.posts = postsRef.orderBy("timestamp", "desc").onSnapshot(
       (snapshot) => {
         let posts = [];
         snapshot.forEach((doc) => {
           posts.push({ id: doc.id, ...doc.data() });
         });
 
-        // In-memory sorting by timestamp descending (newest first)
-        posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-        setPosts(posts);
-        PostModal.refresh();
+        onLoaded(posts);
       },
       (error) => {
         handleError(error);
@@ -389,9 +375,8 @@ const Firebase = (() => {
     }
   }
 
-  function loadComments(postId) {
+  function loadComments(postId, onLoaded) {
     if (unsubscribe.comments) unsubscribe.comments();
-
     unsubscribe.comments = db
       .collection("comments")
       .where("postId", "==", postId)
@@ -403,7 +388,7 @@ const Firebase = (() => {
             ...doc.data(),
           }));
 
-          CommentsSection.renderComments(comments);
+          onLoaded(comments);
         },
         (error) => handleError(error),
       );
@@ -452,5 +437,5 @@ const Firebase = (() => {
     }
   }
 
-  return { initAuth, login, signup, logout, getUser, loadUsers, setUser, deleteUser, createPost, getPost, setPost, deletePost, reactPost, countPostShare, commentPost, loadComments, reactComment };
+  return { initAuth, login, signup, logout, getUser, loadUsers, loadUser, setUser, deleteUser, createPost, getPost, loadPosts, setPost, deletePost, reactPost, countPostShare, commentPost, loadComments, reactComment };
 })();

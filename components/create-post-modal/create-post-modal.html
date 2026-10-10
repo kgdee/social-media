@@ -1,0 +1,29 @@
+<div class="create-post-modal modal hidden" onclick="CreatePostModal.toggle()">
+  <div class="modal-content" onclick="stopPropagation(event)">
+    <button class="close-btn" onclick="CreatePostModal.toggle()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="modal-title">Create post</div>
+
+    <div class="modal-body">
+      <div class="profile-display">
+        <div class="avatar self-avatar"></div>
+        <span class="self-name">Username</span>
+      </div>
+
+      <textarea class="content-input" placeholder="What's on your mind?"></textarea>
+
+      <div class="optional-input-group">
+        <span>Add to your post</span>
+        <label class="image-input">
+          <i class="bi bi-image"></i>
+          <input type="file" accept="image/*" hidden />
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="button" onclick="CreatePostModal.createPost()">Post</button>
+    </div>
+  </div>
+</div>

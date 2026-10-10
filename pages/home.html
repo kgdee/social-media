@@ -8,29 +8,32 @@
     <link href="../vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="../components/comments-section/comments-section.css" />
+    <link rel="stylesheet" href="../components/create-post-modal/create-post-modal.css" />
+    <link rel="stylesheet" href="../components/navbar/navbar.css" />
+    <link rel="stylesheet" href="../components/post-card/post-card.css" />
+    <link rel="stylesheet" href="../components/post-modal/post-modal.css" />
+    <link rel="stylesheet" href="../components/profile-modal/profile-modal.css" />
+    <link rel="stylesheet" href="../components/toast/toast.css" />
     <script src="../vendor/firebasejs-10.10.0/firebase-app-compat.js" defer></script>
     <script src="../vendor/firebasejs-10.10.0/firebase-auth-compat.js" defer></script>
     <script src="../vendor/firebasejs-10.10.0/firebase-firestore-compat.js" defer></script>
     <script src="../js/constants.js" defer></script>
     <script src="../js/utils.js" defer></script>
     <script src="../js/firebase.js" defer></script>
-    <script src="../js/toast.js" defer></script>
     <script src="../js/main.js" defer></script>
+    <script src="../components/toast/toast.js" defer></script>
+    <script src="../components/navbar/navbar.js" defer></script>
+    <script src="../components/create-post-modal/create-post-modal.js" defer></script>
+    <script src="../components/post-card/post-card.js" defer></script>
+    <script src="../components/post-modal/post-modal.js" defer></script>
+    <script src="../components/comments-section/comments-section.js" defer></script>
+    <script src="../components/profile-modal/profile-modal.js" defer></script>
     <script src="../js/home.js" defer></script>
-    <script src="../js/post-card.js" defer></script>
-    <script src="../js/create-post-modal.js" defer></script>
-    <script src="../js/post-modal.js" defer></script>
-    <script src="../js/comments-section.js" defer></script>
-    <script src="../js/profile-modal.js" defer></script>
   </head>
   <body>
     <div class="app home-page">
-      <nav class="navbar">
-        <div class="container content">
-          <div class="logo">Connect.</div>
-          <div class="avatar self-avatar" onclick="ProfileModal.open()"></div>
-        </div>
-      </nav>
+      <div class="navbar"></div>
 
       <main class="feed-container container">
         <div class="create-post-widget feed-card" onclick="CreatePostModal.toggle()">
@@ -65,108 +68,10 @@
         </div>
       </main>
 
-      <!-- Create post modal -->
-      <div class="create-post-modal modal hidden" onclick="CreatePostModal.toggle()">
-        <div class="modal-content" onclick="stopPropagation(event)">
-          <button class="close-btn" onclick="CreatePostModal.toggle()">
-            <i class="bi bi-x-lg"></i>
-          </button>
-          <div class="modal-title">Create post</div>
-
-          <div class="modal-body">
-            <div class="profile-display">
-              <div class="avatar self-avatar"></div>
-              <span class="self-name">Username</span>
-            </div>
-
-            <textarea class="content-input" placeholder="What's on your mind?"></textarea>
-
-            <div class="optional-input-group">
-              <span>Add to your post</span>
-              <label class="image-input">
-                <i class="bi bi-image"></i>
-                <input type="file" accept="image/*" hidden />
-              </label>
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button class="button" onclick="CreatePostModal.createPost()">Post</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Post modal -->
-      <div class="post-modal modal hidden" onclick="PostModal.close()">
-        <div class="modal-content" onclick="stopPropagation(event)">
-          <button class="close-btn" onclick="PostModal.close()">
-            <i class="bi bi-x-lg"></i>
-          </button>
-          <div class="modal-title">Post title</div>
-
-          <div class="modal-body">
-            <div class="post-card-container"></div>
-
-            <!-- Comments section -->
-            <div class="comments-section">
-              <div class="title">Comments</div>
-
-              <div class="comment-list"></div>
-
-              <div class="comment-input">
-                <textarea placeholder="Add a comment..."></textarea>
-                <div class="modal-actions">
-                  <button class="button submit-btn" onclick="CommentsModal.commentPost()">Post Comment</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile modal -->
-      <div class="profile-modal modal hidden" onclick="ProfileModal.close()">
-        <div class="modal-content" onclick="stopPropagation(event)">
-          <div class="modal-header">
-            <div class="modal-title">Edit Profile</div>
-            <button class="close-btn" onclick="ProfileModal.close()">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-
-          <div class="modal-body">
-            <!-- Avatar Selection/Preview -->
-            <label class="avatar-input">
-              <div class="avatar-preview">
-                <img src="../assets/images/default-avatar.jpg" />
-                <div class="avatar-overlay">
-                  <i class="bi bi-camera-fill"></i>
-                </div>
-              </div>
-              <input type="file" accept="image/*" hidden />
-            </label>
-
-            <label class="name-input">
-              Name
-              <div style="position: relative">
-                <input type="text" placeholder="Enter name" />
-                <button class="random-btn" onclick="ProfileModal.generateName()"><i class="bi bi-dice-3-fill"></i></button>
-              </div>
-            </label>
-
-            <label class="bio-input">
-              Bio
-              <textarea rows="3" placeholder="Tell about yourself..."></textarea>
-            </label>
-          </div>
-          <div class="modal-actions">
-            <button class="button" onclick="ProfileModal.close()">Cancel</button>
-            <button class="button" onclick="ProfileModal.updateUser()">Save Changes</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="toast hidden"></div>
+      <div class="profile-modal"></div>
+      <div class="post-modal"></div>
+      <div class="create-post-modal"></div>
+      <div class="toast"></div>
     </div>
   </body>
 </html>

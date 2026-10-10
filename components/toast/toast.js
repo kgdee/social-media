@@ -1,9 +1,13 @@
 const Toast = (() => {
-  const element = document.querySelector(".toast");
+  let element;
 
-  const currentItems = [];
+  let currentItems = [];
   let max = 5;
   let time = 3;
+
+  async function render() {
+    element = await replaceElement("toast");
+  }
 
   async function show(message) {
     element.classList.remove("hidden");
@@ -26,5 +30,5 @@ const Toast = (() => {
     if (element.children.length <= 0) element.classList.add("hidden");
   }
 
-  return { show };
+  return { render, show };
 })();

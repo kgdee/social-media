@@ -1,0 +1,59 @@
+@scope (.comments-section) {
+  :scope {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .comment-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 120px;
+    overflow-y: auto;
+  }
+
+  .comment-list .item {
+    display: flex;
+    gap: 10px;
+  }
+
+  .comment-list .item .title span {
+    color: var(--text-secondary);
+  }
+
+  .comment-list .item .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .comment-list .item .actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .comment-list .item .actions > * {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-grow: 0;
+    background-color: transparent;
+    font-size: 1.1rem;
+  }
+
+  .comment-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .comment-input textarea {
+    flex: 1;
+    resize: none;
+    min-height: 50px;
+  }
+}

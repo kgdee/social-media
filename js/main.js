@@ -1,3 +1,4 @@
+let currentUser = null;
 let isLoading = false;
 
 function changePage(name) {
@@ -8,6 +9,16 @@ function changePage(name) {
 
 function loading(state = true) {
   isLoading = state;
+}
+
+function updateUI() {
+  const avatarEls = document.querySelectorAll(".self-avatar");
+  avatarEls.forEach((el) => {
+    const imageUrl = getAvatarImage(currentUser);
+    const letter = getAvatarLetter(currentUser);
+
+    el.innerHTML = imageUrl ? `<img src="${imageUrl}">` : letter;
+  });
 }
 
 async function signup(event) {
@@ -70,7 +81,7 @@ function createAvatarHTML(data) {
 }
 
 function debug() {
-  console.log("currentPosts", currentPosts)
+  console.log("currentPosts", currentPosts);
 }
 
 const keyActions = {

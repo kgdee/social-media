@@ -1,13 +1,18 @@
 const ProfileModal = (() => {
-  const element = document.querySelector(".profile-modal");
-  const avatarInput = element.querySelector(".avatar-input input");
-  const avatarPreview = element.querySelector(".avatar-preview img");
-  const nameInput = element.querySelector(".name-input input");
-  const bioInput = element.querySelector(".bio-input textarea");
+  let element;
+  let avatarInput;
+  let avatarPreview;
+  let nameInput;
+  let bioInput;
 
-  avatarInput.addEventListener("change", async () => {
-    avatarPreview.src = await handleImageFile(avatarInput.files[0]);
-  });
+  async function render() {
+    element = await replaceElement("profile-modal");
+
+    avatarInput = element.querySelector(".avatar-input input");
+    avatarPreview = element.querySelector(".avatar-preview img");
+    nameInput = element.querySelector(".name-input input");
+    bioInput = element.querySelector(".bio-input textarea");
+  }
 
   async function updateUser() {
     if (isLoading) return;
@@ -54,5 +59,9 @@ const ProfileModal = (() => {
     nameInput.value = getRandomItem(names);
   }
 
-  return { updateUser, open, close, generateName };
+  async function updateAvatarPreview() {
+    avatarPreview.src = await handleImageFile(avatarInput.files[0]);
+  }
+
+  return { render, updateUser, open, close, generateName, updateAvatarPreview };
 })();

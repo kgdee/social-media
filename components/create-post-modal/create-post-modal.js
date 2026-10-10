@@ -1,7 +1,14 @@
 const CreatePostModal = (() => {
-  const element = document.querySelector(".create-post-modal");
-  const contentInput = element.querySelector(".content-input");
-  const imageInput = element.querySelector(".image-input input");
+  let element;
+  let contentInput;
+  let imageInput;
+
+  async function render() {
+    element = await replaceElement("create-post-modal");
+
+    contentInput = element.querySelector(".content-input");
+    imageInput = element.querySelector(".image-input input");
+  }
 
   async function createPost() {
     event.preventDefault();
@@ -41,5 +48,5 @@ const CreatePostModal = (() => {
     imageInput.value = "";
   }
 
-  return { toggle, createPost };
+  return { render, toggle, createPost };
 })();

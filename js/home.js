@@ -2,42 +2,45 @@ const postList = document.querySelector(".post-list");
 
 let currentPosts = [];
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function initPage() {
+  await Toast.render();
+  await Navbar.render();
+  await CreatePostModal.render();
+  await PostModal.render();
+  await ProfileModal.render();
+  
+  await Firebase.loadUser();
   await Firebase.loadUsers();
-  await loadPostFromLink();
-});
+  await Firebase.loadPosts(null, onPostsLoaded);
 
-async function loadPostFromLink() {
+  await checkUrl();
+
+  updateUI();
+}
+
+async function checkUrl() {
+  loading(true);
   // 1. If user entered a URL with ?post_id=ID, load the data and show the modal
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("post_id");
-  if (!postId) return;
 
-  loading(true);
+  if (postId) {
+    const post = await Firebase.getPost(postId);
+    if (!post) {
+      loading(false);
+      return;
+    }
 
-  const post = await Firebase.getPost(postId);
-  if (!post) {
-    loading(false);
-    return;
+    await Firebase.countPostShare(post.id);
+
+    await PostModal.open(post.authorId, post.id);
+  } else {
+    // const userId = params.get("user_id");
   }
-
-  await Firebase.countPostShare(post.id);
-
-  await PostModal.open(post.authorId, post.id);
 
   // 2. Immediately reset address bar back to base URL without reloading
   window.history.replaceState({}, "", window.location.pathname);
   loading(false);
-}
-
-function updateUI() {
-  const avatarEls = document.querySelectorAll(".self-avatar");
-  avatarEls.forEach((el) => {
-    const imageUrl = getAvatarImage(currentUser);
-    const letter = getAvatarLetter(currentUser);
-
-    el.innerHTML = imageUrl ? `<img src="${imageUrl}">` : letter;
-  });
 }
 
 function getPost(postId) {
@@ -47,6 +50,11 @@ function getPost(postId) {
 function setPosts(posts) {
   currentPosts = posts;
   renderPosts();
+}
+
+function onPostsLoaded(posts) {
+  setPosts(posts);
+  PostModal.refresh();
 }
 
 function renderPosts(posts) {

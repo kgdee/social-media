@@ -1,0 +1,40 @@
+<div class="profile-modal modal hidden" onclick="ProfileModal.close()">
+  <div class="modal-content" onclick="stopPropagation(event)">
+    <div class="modal-header">
+      <div class="modal-title">Edit Profile</div>
+      <button class="close-btn" onclick="ProfileModal.close()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Avatar Selection/Preview -->
+      <label class="avatar-input">
+        <div class="avatar-preview">
+          <img src="../assets/images/default-avatar.jpg" />
+          <div class="avatar-overlay">
+            <i class="bi bi-camera-fill"></i>
+          </div>
+        </div>
+        <input type="file" accept="image/*" onchange="ProfileModal.updateAvatarPreview()" hidden />
+      </label>
+
+      <label class="name-input">
+        Name
+        <div style="position: relative">
+          <input type="text" placeholder="Enter name" />
+          <button class="random-btn" onclick="ProfileModal.generateName()"><i class="bi bi-dice-3-fill"></i></button>
+        </div>
+      </label>
+
+      <label class="bio-input">
+        Bio
+        <textarea rows="3" placeholder="Tell about yourself..."></textarea>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="button" onclick="ProfileModal.close()">Cancel</button>
+      <button class="button" onclick="ProfileModal.updateUser()">Save Changes</button>
+    </div>
+  </div>
+</div>

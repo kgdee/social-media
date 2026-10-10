@@ -1,9 +1,18 @@
 const PostModal = (() => {
-  const element = document.querySelector(".post-modal");
-  const titleEl = element.querySelector(".modal-title");
-  const postCardContainer = document.querySelector(".post-card-container");
+  let element;
+  let titleEl;
+  let postCardContainer;
 
   let currentPost = null;
+
+  async function render() {
+    element = await replaceElement("post-modal");
+
+    titleEl = element.querySelector(".modal-title");
+    postCardContainer = document.querySelector(".post-card-container");
+
+    await CommentsSection.render()
+  }
 
   function refresh() {
     if (!currentPost) return;
@@ -19,7 +28,7 @@ const PostModal = (() => {
 
     refresh();
 
-    await CommentsSection.init(currentPost.id);
+    await CommentsSection.loadComments(currentPost.id);
 
     element.classList.toggle("hidden", false);
   }
@@ -29,5 +38,5 @@ const PostModal = (() => {
     currentPost = null;
   }
 
-  return { open, close, refresh };
+  return { render, open, close, refresh };
 })();

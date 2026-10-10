@@ -223,3 +223,22 @@ async function handleImageFile(file, maxSize = 128) {
 async function copyText(text) {
   await navigator.clipboard.writeText(text);
 }
+
+async function fetchText(url) {
+  const response = await fetch(url);
+  if (!response.ok) return "";
+  const text = await response.text();
+  return text;
+}
+
+async function replaceElement(name) {
+  const element = document.querySelector(`.${name}`);
+  const htmlText = await fetchText(`../components/${name}/${name}.html`);
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, "text/html");
+  const newElement = doc.body.firstChild; // Extracts the parsed element
+
+  element.replaceWith(newElement);
+  return newElement;
+}

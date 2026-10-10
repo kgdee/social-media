@@ -1,9 +1,16 @@
 const CommentsSection = (() => {
-  const element = document.querySelector(".comments-section");
-  const commentList = element.querySelector(".comment-list");
-  const textInput = element.querySelector(".comment-input textarea");
+  let element;
+  let commentList;
+  let textInput;
 
   let currentPostId = null;
+
+  async function render() {
+    element = await replaceElement("comments-section");
+
+    commentList = element.querySelector(".comment-list");
+    textInput = element.querySelector(".comment-input textarea");
+  }
 
   function renderComments(comments) {
     commentList.innerHTML =
@@ -32,12 +39,12 @@ const CommentsSection = (() => {
         .join("") || `<div class="message center">No comments</div>`;
   }
 
-  async function init(postId) {
+  async function loadComments(postId) {
     if (isLoading) return;
     loading(true);
     currentPostId = postId;
 
-    await Firebase.loadComments(currentPostId);
+    await Firebase.loadComments(currentPostId, renderComments);
 
     loading(false);
   }
@@ -61,5 +68,5 @@ const CommentsSection = (() => {
     loading(false);
   }
 
-  return { init, renderComments, commentPost, reactComment };
+  return { render, loadComments, renderComments, commentPost, reactComment };
 })();
