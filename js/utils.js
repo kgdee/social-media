@@ -242,3 +242,19 @@ async function replaceElement(name) {
   element.replaceWith(newElement);
   return newElement;
 }
+
+function loadResources(urls) {
+  urls.forEach((url) => {
+    let element;
+    if (url.endsWith(".css")) {
+      element = document.createElement("link");
+      element.rel = "stylesheet";
+      element.href = url;
+    } else if (url.endsWith(".js")) {
+      element = document.createElement("script");
+      element.src = url;
+      element.defer = true;
+    }
+    document.head.appendChild(element);
+  });
+}

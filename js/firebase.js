@@ -34,10 +34,11 @@ const Firebase = (() => {
   }
 
   // Listen for auth state changes
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     currentUser = user;
     if (currentUser) {
       // User is signed in
+      await loadUser();
       initPage();
     } else {
       // User is signed out
@@ -100,8 +101,8 @@ const Firebase = (() => {
     }
   }
 
-  function loadUser(userId) {
-    userId = userId || currentUser.uid;
+  function loadUser() {
+    const userId = currentUser.uid;
     const userRef = db.collection("users").doc(userId);
 
     if (unsubscribe.user) unsubscribe.user();
@@ -168,11 +169,11 @@ const Firebase = (() => {
     }
   }
 
-  function loadPosts(userId, onLoaded) {
+  function loadPosts(authorId, onLoaded) {
     let postsRef = db.collection("posts");
 
-    if (userId) {
-      postsRef = postsRef.where("userId", "==", userId);
+    if (authorId) {
+      postsRef = postsRef.where("authorId", "==", authorId);
     }
 
     if (unsubscribe.posts) unsubscribe.posts();

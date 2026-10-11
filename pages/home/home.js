@@ -2,14 +2,15 @@ const postList = document.querySelector(".post-list");
 
 let currentPosts = [];
 
+document.addEventListener("DOMContentLoaded", () => {
+  loadResources(HOME_PAGE_RES);
+});
+
 async function initPage() {
-  await Toast.render();
-  await Navbar.render();
-  await CreatePostModal.render();
-  await PostModal.render();
-  await ProfileModal.render();
-  
-  await Firebase.loadUser();
+  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal]) {
+    await component.render();
+  }
+
   await Firebase.loadUsers();
   await Firebase.loadPosts(null, onPostsLoaded);
 

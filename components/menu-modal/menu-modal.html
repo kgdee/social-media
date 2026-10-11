@@ -1,0 +1,50 @@
+<div class="menu-modal list-modal modal hidden" onclick="MenuModal.toggle()">
+  <div class="container">
+    <div class="modal-content" onclick="stopPropagation(event)">
+      <button class="close-btn" onclick="MenuModal.toggle()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="title">Menu</div>
+
+      <div class="item-list">
+        <label class="item" onclick="ProfileModal.open()">
+          <i class="bi bi-person-circle"></i>
+          <div class="label">Edit profile</div>
+          <div class="arrow">›</div>
+        </label>
+
+        <label class="item">
+          <i class="bi bi-gear"></i>
+          <div class="label" onclick="">Settings & privacy</div>
+          <div class="arrow">›</div>
+        </label>
+
+        <label class="item">
+          <i class="bi bi-question-circle"></i>
+          <div class="label" onclick="">Help & support</div>
+          <div class="arrow">›</div>
+        </label>
+
+        <label class="item">
+          <i class="bi bi-moon"></i>
+          <div class="label">
+            Dark theme
+            <span class="theme-desc" id="themeText"> Enabled </span>
+          </div>
+          <label class="toggle">
+            <input class="theme-checkbox" type="checkbox" onchange="toggleTheme()" />
+            <span class="slider"></span>
+          </label>
+        </label>
+
+        <label class="item">
+          <i class="bi bi-box-arrow-right"></i>
+          <div class="label" onclick="">Log out</div>
+          <div class="arrow">›</div>
+        </label>
+      </div>
+
+      <div class="modal-footer">Privacy · Terms · Advertising · Ad choices ▷ · Cookies · More</div>
+    </div>
+  </div>
+</div>

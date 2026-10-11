@@ -1,13 +1,16 @@
 const postList = document.querySelector(".post-list");
 
+let currentTarget = null;
 let currentPosts = [];
 
+document.addEventListener("DOMContentLoaded", () => {
+  loadResources(PROFILE_PAGE_RES);
+});
+
 async function initPage() {
-  await Toast.render();
-  await Navbar.render();
-  await CreatePostModal.render();
-  await PostModal.render();
-  await ProfileModal.render();
+  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal]) {
+    await component.render();
+  }
 
   await checkUrl();
 
@@ -27,10 +30,9 @@ async function checkUrl() {
       return;
     }
 
-    await Firebase.loadUser(userId);
-    await Firebase.loadPosts(userId, onPostsLoaded);
+    await Firebase.loadPosts(user.id, onPostsLoaded);
 
-    console.log("Profile page:", user)
+    console.log("Profile page:", user);
   }
 
   loading(false);
@@ -40,13 +42,9 @@ function getPost(postId) {
   return currentPosts.filter((post) => post.id === postId)[0];
 }
 
-function setPosts(posts) {
+function onPostsLoaded(posts) {
   currentPosts = posts;
   renderPosts();
-}
-
-function onPostsLoaded(posts) {
-  setPosts(posts);
   PostModal.refresh();
 }
 

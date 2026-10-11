@@ -1,0 +1,39 @@
+<div class="settings-modal modal hidden" onclick="toggleModal('settings-modal')">
+  <div class="modal-content" onclick="stopPropagation(event)">
+    <div class="modal-header">
+      <div class="title"><img src="assets/images/icons/settings-gear.png" /> Game Settings</div>
+      <button class="close-btn" onclick="toggleModal('settings-modal')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body item-list">
+      <div class="item">
+        <div class="label-group">
+          <span class="title">Master Volume</span>
+          <span class="desc">Adjust global UI and sound effect volume</span>
+        </div>
+        <input type="range" min="0" max="100" value="80" id="volume-slider" />
+      </div>
+
+      <div class="item">
+        <div class="label-group">
+          <span class="title">Particle Density</span>
+          <span class="desc">Toggle background magical particles</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="item">
+        <div class="label-group">
+          <span class="title">High Quality Shaders</span>
+          <span class="desc">Enable 3D card holographic reflection effects</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

@@ -52,7 +52,7 @@ function createAvatarHTML(data) {
 
 function goToProfilePage(userId) {
   userId = userId || currentUser.uid;
-  changePage("profile", `?used_id=${userId}`);
+  changePage("profile", `?user_id=${userId}`);
 }
 
 function debug() {

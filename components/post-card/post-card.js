@@ -7,7 +7,7 @@ const PostCard = (() => {
 
     return `
           <div class="post-card">
-            <div class="post-header">
+            <div class="post-header" onclick="goToProfilePage('${post.authorId}')">
                 ${createAvatarHTML(post)}
                 <div class="author-info">
                     <span class="name">${authorName}</span>
