@@ -5,7 +5,6 @@ const CreatePostModal = (() => {
 
   async function render() {
     element = await replaceElement("create-post-modal");
-
     contentInput = element.querySelector(".content-input");
     imageInput = element.querySelector(".image-input input");
   }

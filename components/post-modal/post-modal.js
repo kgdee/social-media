@@ -7,7 +7,6 @@ const PostModal = (() => {
 
   async function render() {
     element = await replaceElement("post-modal");
-
     titleEl = element.querySelector(".modal-title");
     postCardContainer = document.querySelector(".post-card-container");
 

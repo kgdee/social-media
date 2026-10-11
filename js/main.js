@@ -1,10 +1,10 @@
 let currentUser = null;
 let isLoading = false;
 
-function changePage(name) {
-  const targetPath = `/pages/${name}.html`;
+function changePage(name, params = "") {
+  const targetPath = `/pages/${name}/${name}.html`;
   if (window.location.pathname.includes(targetPath)) return;
-  window.location.replace(`/pages/${name}.html`);
+  window.location.replace(`${targetPath}${params}`);
 }
 
 function loading(state = true) {
@@ -19,36 +19,6 @@ function updateUI() {
 
     el.innerHTML = imageUrl ? `<img src="${imageUrl}">` : letter;
   });
-}
-
-async function signup(event) {
-  event.preventDefault();
-
-  if (isLoading) return;
-  loading(true);
-
-  const email = document.querySelector(".email-input").value;
-  const password = document.querySelector(".password-input").value;
-
-  await Firebase.signup({ email, password });
-
-  event.target.reset();
-  loading(false);
-}
-
-async function login(event) {
-  event.preventDefault();
-
-  if (isLoading) return;
-  loading(true);
-
-  const email = document.querySelector(".email-input").value;
-  const password = document.querySelector(".password-input").value;
-
-  await Firebase.login({ email, password });
-
-  event.target.reset();
-  loading(false);
 }
 
 function handleUnavailable() {
@@ -78,6 +48,11 @@ function createAvatarHTML(data) {
 
   const letter = getAvatarLetter(data);
   return `<div class="avatar">${letter}</div>`;
+}
+
+function goToProfilePage(userId) {
+  userId = userId || currentUser.uid;
+  changePage("profile", `?used_id=${userId}`);
 }
 
 function debug() {

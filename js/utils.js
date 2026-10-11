@@ -233,7 +233,7 @@ async function fetchText(url) {
 
 async function replaceElement(name) {
   const element = document.querySelector(`.${name}`);
-  const htmlText = await fetchText(`../components/${name}/${name}.html`);
+  const htmlText = await fetchText(`/components/${name}/${name}.html`);
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlText, "text/html");

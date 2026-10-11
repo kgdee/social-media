@@ -7,7 +7,6 @@ const CommentsSection = (() => {
 
   async function render() {
     element = await replaceElement("comments-section");
-
     commentList = element.querySelector(".comment-list");
     textInput = element.querySelector(".comment-input textarea");
   }

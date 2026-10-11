@@ -7,7 +7,6 @@ const ProfileModal = (() => {
 
   async function render() {
     element = await replaceElement("profile-modal");
-
     avatarInput = element.querySelector(".avatar-input input");
     avatarPreview = element.querySelector(".avatar-preview img");
     nameInput = element.querySelector(".name-input input");
@@ -35,7 +34,7 @@ const ProfileModal = (() => {
 
     const user = await Firebase.getUser(currentUser.uid);
 
-    avatarPreview.src = getAvatarImage(user) || "../assets/images/default-avatar.jpg";
+    avatarPreview.src = getAvatarImage(user) || "/assets/images/default-avatar.jpg";
     nameInput.value = user?.name || "";
     bioInput.value = user?.bio || "";
 

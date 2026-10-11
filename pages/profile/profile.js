@@ -3,6 +3,12 @@ const postList = document.querySelector(".post-list");
 let currentPosts = [];
 
 async function initPage() {
+  await Toast.render();
+  await Navbar.render();
+  await CreatePostModal.render();
+  await PostModal.render();
+  await ProfileModal.render();
+
   await checkUrl();
 
   updateUI();
@@ -24,11 +30,9 @@ async function checkUrl() {
     await Firebase.loadUser(userId);
     await Firebase.loadPosts(userId, onPostsLoaded);
 
-    document.querySelector("main").innerHTML = `${JSON.stringify(user)}`;
+    console.log("Profile page:", user)
   }
 
-  // 2. Immediately reset address bar back to base URL without reloading
-  window.history.replaceState({}, "", window.location.pathname);
   loading(false);
 }
 
