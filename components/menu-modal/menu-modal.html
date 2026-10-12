@@ -1,47 +1,48 @@
-<div class="menu-modal list-modal modal hidden" onclick="MenuModal.toggle()">
+<div class="menu-modal list-modal modal hidden" onclick="MenuModal.close()">
   <div class="container">
     <div class="modal-content" onclick="stopPropagation(event)">
-      <button class="close-btn" onclick="MenuModal.toggle()">
+      <button class="close-btn" onclick="MenuModal.close()">
         <i class="bi bi-x-lg"></i>
       </button>
       <div class="title">Menu</div>
 
-      <div class="item-list">
-        <label class="item" onclick="ProfileModal.open()">
-          <i class="bi bi-person-circle"></i>
-          <div class="label">Edit profile</div>
-          <div class="arrow">›</div>
-        </label>
+      <div class="modal-body">
+        <div class="profile-display" onclick="goToProfilePage()">
+          <img src="/assets/images/default-avatar.jpg" class="avatar">
+          <span class="self-username">User name</span>
+        </div>
 
-        <label class="item">
-          <i class="bi bi-gear"></i>
-          <div class="label" onclick="">Settings & privacy</div>
-          <div class="arrow">›</div>
-        </label>
-
-        <label class="item">
-          <i class="bi bi-question-circle"></i>
-          <div class="label" onclick="">Help & support</div>
-          <div class="arrow">›</div>
-        </label>
-
-        <label class="item">
-          <i class="bi bi-moon"></i>
-          <div class="label">
-            Dark theme
-            <span class="theme-desc" id="themeText"> Enabled </span>
-          </div>
-          <label class="toggle">
-            <input class="theme-checkbox" type="checkbox" onchange="toggleTheme()" />
-            <span class="slider"></span>
+        <div class="item-list">
+          <label class="item" onclick="SettingsModal.open()">
+            <i class="bi bi-gear"></i>
+            <div class="info">Settings & privacy</div>
+            <div class="arrow">›</div>
           </label>
-        </label>
-
-        <label class="item">
-          <i class="bi bi-box-arrow-right"></i>
-          <div class="label" onclick="">Log out</div>
-          <div class="arrow">›</div>
-        </label>
+  
+          <label class="item">
+            <i class="bi bi-question-circle"></i>
+            <div class="info">Help & support</div>
+            <div class="arrow">›</div>
+          </label>
+  
+          <label class="item item-theme">
+            <i class="bi bi-moon"></i>
+            <div class="info">
+              Dark theme
+              <span class="desc">Enabled</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" onchange="MenuModal.handleThemeToggle()" />
+              <span class="slider"></span>
+            </label>
+          </label>
+  
+          <label class="item">
+            <i class="bi bi-box-arrow-right"></i>
+            <div class="info">Log out</div>
+            <div class="arrow">›</div>
+          </label>
+        </div>
       </div>
 
       <div class="modal-footer">Privacy · Terms · Advertising · Ad choices ▷ · Cookies · More</div>

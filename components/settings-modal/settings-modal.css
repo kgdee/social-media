@@ -15,7 +15,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .item .label-group {
+  .item .info {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
@@ -29,5 +29,9 @@
   .item .desc {
     font-size: 0.8rem;
     color: var(--text-muted);
+  }
+
+  .item .arrow {
+    font-size: 1.2rem;
   }
 }

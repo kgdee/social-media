@@ -11,10 +11,8 @@ const HOME_PAGE_RES = [
   "/components/post-modal/post-modal.css",
   "/components/profile-modal/profile-modal.css",
   "/components/menu-modal/menu-modal.css",
+  "/components/settings-modal/settings-modal.css",
   "/components/toast/toast.css",
-  "/vendor/firebasejs-10.10.0/firebase-app-compat.js",
-  "/vendor/firebasejs-10.10.0/firebase-auth-compat.js",
-  "/vendor/firebasejs-10.10.0/firebase-firestore-compat.js",
   "/js/firebase.js",
   "/components/toast/toast.js",
   "/components/navbar/navbar.js",
@@ -24,6 +22,7 @@ const HOME_PAGE_RES = [
   "/components/comments-section/comments-section.js",
   "/components/profile-modal/profile-modal.js",
   "/components/menu-modal/menu-modal.js",
+  "/components/settings-modal/settings-modal.js",
 ];
 
 const PROFILE_PAGE_RES = [
@@ -37,10 +36,8 @@ const PROFILE_PAGE_RES = [
   "/components/post-modal/post-modal.css",
   "/components/profile-modal/profile-modal.css",
   "/components/menu-modal/menu-modal.css",
+  "/components/settings-modal/settings-modal.css",
   "/components/toast/toast.css",
-  "/vendor/firebasejs-10.10.0/firebase-app-compat.js",
-  "/vendor/firebasejs-10.10.0/firebase-auth-compat.js",
-  "/vendor/firebasejs-10.10.0/firebase-firestore-compat.js",
   "/js/firebase.js",
   "/components/toast/toast.js",
   "/components/navbar/navbar.js",
@@ -50,6 +47,7 @@ const PROFILE_PAGE_RES = [
   "/components/comments-section/comments-section.js",
   "/components/profile-modal/profile-modal.js",
   "/components/menu-modal/menu-modal.js",
+  "/components/settings-modal/settings-modal.js",
 ];
 
 const NAMES = ["CyberViper", "DoomSlayer", "ApexPredator", "ShadowBlade", "PixelPhantom", "NeonSpecter", "IronRogue", "VoidWalker", "StormBreaker", "FrostByte", "ChaosKnight", "BlazeRunner", "QuantumHunter", "GhostProtocol", "VortexRider"];

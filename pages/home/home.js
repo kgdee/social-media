@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function initPage() {
-  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal]) {
+  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal, SettingsModal]) {
     await component.render();
   }
 

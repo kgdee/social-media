@@ -32,7 +32,7 @@ const ProfileModal = (() => {
     if (isLoading) return;
     loading(true);
 
-    const user = await Firebase.getUser(currentUser.uid);
+    const user = (await Firebase.getUser(currentUser.uid)) || currentUser;
 
     avatarPreview.src = getAvatarImage(user) || "/assets/images/default-avatar.jpg";
     nameInput.value = user?.name || "";

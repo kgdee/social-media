@@ -7,24 +7,29 @@
 }
 
 :root {
-  --text-primary: #333;
-  --text-secondary: #6b7280;
-  --bg-color: #eee;
-  --border-color: rgba(0, 0, 0, 0.2);
-  --card-color: #fff;
-  --primary: #1976d2;
-  --red: #f44336;
-  --green: #4caf50;
-  --blue: #3f51b5;
-  --lightblue: #2196f3;
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-secondary: #10b981;
+
+  --color-bg: #f0f2f5;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+
+  --color-accent: #f59e0b;
+  --color-danger: #f43f5e;
+  --color-border: #e2e8f0;
 }
 
 .dark-theme {
-  --text-primary: #eee;
-  --text-secondary: #9ca3af;
-  --bg-color: #222;
-  --border-color: rgba(255, 255, 255, 0.2);
-  --card-color: #333;
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+
+  --color-accent: #fbbf24;
+  --color-danger: #fb7185;
+  --color-border: #334155;
 }
 
 * {
@@ -40,6 +45,7 @@
 
 button {
   font-family: "Poppins", sans-serif;
+  color: var(--color-text);
   cursor: pointer;
 }
 
@@ -49,7 +55,7 @@ button {
   justify-content: center;
   gap: 5px;
   padding: 8px 16px;
-  background: var(--primary);
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -59,7 +65,7 @@ button {
 }
 
 .btn-danger {
-  background-color: var(--red);
+  background-color: var(--color-danger);
 }
 
 .btn-icon {
@@ -71,7 +77,8 @@ input,
 textarea {
   font-family: "Poppins", sans-serif;
   padding: 5px;
-  background-color: var(--bg-color);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 textarea {
@@ -117,8 +124,8 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: var(--card-color);
-    border: 1px solid var(--border-color);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 5px;
   }
 
@@ -128,7 +135,7 @@ textarea {
     right: 10px;
     padding: 0;
     background-color: transparent;
-    color: var(--text-primary);
+    color: var(--color-text);
     font-size: 1.2rem;
   }
 
@@ -157,17 +164,59 @@ textarea {
 }
 
 .subtitle {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
 }
 
 .message {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
+}
+
+@scope (.toggle) {
+  :scope {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+
+  input {
+    display: none;
+  }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+
+  input:checked + .slider {
+    background: #2196f3;
+  }
+
+  input:checked + .slider::before {
+    transform: translateX(24px);
+  }
 }
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 .container {
@@ -202,7 +251,7 @@ main {
   height: min-content;
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: var(--primary);
+  background-color: var(--color-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -249,7 +298,7 @@ main {
     font-size: 1.5rem;
   }
 
-  .item .label {
+  .item .info {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -272,7 +321,7 @@ main {
     padding: 2px;
     background-color: var(--label-color);
     color: var(--text-color);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--color-border);
   }
 }
 

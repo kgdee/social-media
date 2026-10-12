@@ -39,9 +39,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    background-color: var(--card-color);
+    background-color: var(--color-surface);
     padding: 10px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: 4px;
   }
 
@@ -50,20 +50,20 @@
   }
 
   .tabs-bar .item-list .item {
-    color: var(--text-secondary);
+    color: var(--color-text-muted);
     padding: 10px;
     cursor: pointer;
   }
 
   .tabs-bar .item-list .item.active {
-    color: var(--primary);
+    color: var(--color-primary);
   }
 
   .tabs-bar .more-btn {
     min-width: 50px;
     height: min-content;
     padding: 5px;
-    background-color: var(--bg-color);
+    background-color: var(--color-bg);
     border-radius: 4px;
   }
 }

@@ -59,7 +59,7 @@
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    background-color: var(--primary);
+    background-color: var(--color-primary);
     color: white;
     border-radius: 50%;
     padding: 8px;

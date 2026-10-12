@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link href="/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
     <link rel="stylesheet" href="/components/toast/toast.css" />
     <script src="/vendor/firebasejs-10.10.0/firebase-app-compat.js" defer></script>
     <script src="/vendor/firebasejs-10.10.0/firebase-auth-compat.js" defer></script>
@@ -17,7 +17,7 @@
     <script src="/js/firebase.js" defer></script>
     <script src="/js/main.js" defer></script>
     <script src="/components/toast/toast.js" defer></script>
-    <script src="auth.js" defer></script>
+    <script src="/js/auth.js" defer></script>
   </head>
   <body>
     <div class="app container auth-page">
@@ -43,7 +43,7 @@
             <button type="submit" class="button">Sign up</button>
           </form>
 
-          <a href="#" class="acc-link">Already have an account? <span>Log in</span></a>
+          <div class="acc-link" onclick="changePage('login')">Already have an account? <span>Log in</span></div>
         </div>
 
         <div class="credit-display">

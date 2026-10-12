@@ -21,7 +21,7 @@
   }
 
   .comment-list .item .title span {
-    color: var(--text-secondary);
+    color: var(--color-text-muted);
   }
 
   .comment-list .item .content {

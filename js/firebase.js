@@ -3,13 +3,21 @@ const Firebase = (() => {
   // https://firebase.google.com/docs/web/setup#available-libraries
 
   // Your web app's Firebase configuration
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyBI2oALBTbtbEeyZqH-z1yp4l8DPlxYJWw",
+  //   authDomain: "social-media-75b1b.firebaseapp.com",
+  //   projectId: "social-media-75b1b",
+  //   storageBucket: "social-media-75b1b.firebasestorage.app",
+  //   messagingSenderId: "939854753119",
+  //   appId: "1:939854753119:web:ae1685226a6d08c4c2daea",
+  // };
   const firebaseConfig = {
-    apiKey: "AIzaSyBI2oALBTbtbEeyZqH-z1yp4l8DPlxYJWw",
-    authDomain: "social-media-75b1b.firebaseapp.com",
-    projectId: "social-media-75b1b",
-    storageBucket: "social-media-75b1b.firebasestorage.app",
-    messagingSenderId: "939854753119",
-    appId: "1:939854753119:web:ae1685226a6d08c4c2daea",
+    apiKey: "AIzaSyADXieGpNZftFKRnch6debqG9APhF96MoU",
+    authDomain: "social-media-cb41e.firebaseapp.com",
+    projectId: "social-media-cb41e",
+    storageBucket: "social-media-cb41e.firebasestorage.app",
+    messagingSenderId: "951423891523",
+    appId: "1:951423891523:web:93efa354cb87b863cfbcf6",
   };
 
   // Initialize Firebase
@@ -36,16 +44,9 @@ const Firebase = (() => {
   // Listen for auth state changes
   auth.onAuthStateChanged(async (user) => {
     currentUser = user;
-    if (currentUser) {
-      // User is signed in
-      await loadUser();
-      initPage();
-    } else {
-      // User is signed out
-      changePage("signup");
-
-      // Optional: Unsubscribe from real-time listener if exists
-    }
+    protectPage();
+    if (currentUser) await loadUser();
+    window.initPage?.();
   });
 
   function getUserName() {
@@ -58,8 +59,9 @@ const Firebase = (() => {
 
   async function login(data) {
     try {
-      await auth.signInWithEmailAndPassword(data.email, data.password);
+      const userCredential = await auth.signInWithEmailAndPassword(data.email, data.password);
       notify("Logged in successfully.");
+      return userCredential.user;
     } catch (error) {
       handleError(error);
     }
@@ -67,8 +69,9 @@ const Firebase = (() => {
 
   async function signup(data) {
     try {
-      await auth.createUserWithEmailAndPassword(data.email, data.password);
+      const userCredential = await auth.createUserWithEmailAndPassword(data.email, data.password);
       notify("Account created successfully.");
+      return userCredential.user;
     } catch (error) {
       handleError(error);
     }

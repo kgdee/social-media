@@ -1,36 +1,63 @@
-<div class="settings-modal modal hidden" onclick="toggleModal('settings-modal')">
+<div class="settings-modal modal hidden" onclick="SettingsModal.close()">
   <div class="modal-content" onclick="stopPropagation(event)">
     <div class="modal-header">
-      <div class="title"><img src="assets/images/icons/settings-gear.png" /> Game Settings</div>
-      <button class="close-btn" onclick="toggleModal('settings-modal')"><i class="bi bi-x-lg"></i></button>
+      <div class="title">Settings</div>
+      <button class="close-btn" onclick="SettingsModal.close()"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="modal-body item-list">
-      <div class="item">
-        <div class="label-group">
-          <span class="title">Master Volume</span>
-          <span class="desc">Adjust global UI and sound effect volume</span>
+      <!-- Edit Profile -->
+      <div class="item item-profile" onclick="ProfileModal.open()">
+        <div class="info">
+          <span class="title">Edit Profile</span>
+          <span class="desc">Change photo, bio, and display name</span>
         </div>
-        <input type="range" min="0" max="100" value="80" id="volume-slider" />
+        <div class="arrow">›</div>
       </div>
 
-      <div class="item">
-        <div class="label-group">
-          <span class="title">Particle Density</span>
-          <span class="desc">Toggle background magical particles</span>
+      <!-- Private Account Toggle -->
+      <div class="item item-privacy">
+        <div class="info">
+          <span class="title">Private Account</span>
+          <span class="desc">Only approved followers can see your posts</span>
         </div>
         <label class="toggle">
-          <input type="checkbox" checked />
+          <input type="checkbox" id="private-account-toggle" />
           <span class="slider"></span>
         </label>
       </div>
 
-      <div class="item">
-        <div class="label-group">
-          <span class="title">High Quality Shaders</span>
-          <span class="desc">Enable 3D card holographic reflection effects</span>
+      <!-- Push Notifications Toggle -->
+      <div class="item item-notifications">
+        <div class="info">
+          <span class="title">Push Notifications</span>
+          <span class="desc">Get notified about likes, comments, and messages</span>
         </div>
         <label class="toggle">
-          <input type="checkbox" />
+          <input type="checkbox" checked id="notifications-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Data Saver / Autoplay Toggle -->
+      <div class="item item-data-saver">
+        <div class="info">
+          <span class="title">Data Saver Mode</span>
+          <span class="desc">Reduce video quality and disable media autoplay</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="data-saver-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Dark Theme Toggle -->
+      <div class="item item-theme">
+        <div class="info">
+          <span class="title">Dark Theme</span>
+          <span class="desc">Switch between light and dark mode appearance</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" onchange="SettingsModal.handleThemeToggle()" />
           <span class="slider"></span>
         </label>
       </div>

@@ -2,8 +2,8 @@
   :scope {
     position: sticky;
     width: 100%;
-    background-color: var(--card-color);
-    border-bottom: 1px solid var(--border-color);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .content {
@@ -16,7 +16,7 @@
   .logo {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--color-primary);
   }
 
   .email-display {
