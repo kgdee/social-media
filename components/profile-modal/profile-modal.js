@@ -19,7 +19,7 @@ const ProfileModal = (() => {
 
     const data = {
       name: nameInput.value,
-      avatar: await handleImageFile(avatarInput.files[0], 128),
+      avatarUrl: await handleImageFile(avatarInput.files[0], 128),
       bio: bioInput.value,
     };
     await Firebase.setUser(currentUser.uid, data);

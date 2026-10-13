@@ -1,9 +1,14 @@
 let currentUser = null;
 let isLoading = false;
-let darkTheme = load("darkTheme", false);
+const currentSettings = load("currentSettings", {
+  privateAccount: false,
+  notifications: true,
+  dataSaver: false,
+  darkTheme: false,
+});
 
 document.addEventListener("DOMContentLoaded", () => {
-  toggleTheme(darkTheme);
+  updateUI();
 });
 
 function changePage(name, params = "") {
@@ -17,23 +22,26 @@ function loading(state = true) {
 }
 
 function updateUI() {
-  const avatarEls = document.querySelectorAll(".self-avatar");
-  avatarEls?.forEach((el) => {
-    const imageUrl = getAvatarImage(currentUser);
-    const letter = getAvatarLetter(currentUser);
+  document.body.classList.toggle("dark-theme", currentSettings.darkTheme);
 
-    el.innerHTML = imageUrl ? `<img src="${imageUrl}">` : letter;
+  if (currentUser) {
+    const avatarEls = document.querySelectorAll(".self-avatar");
+    avatarEls?.forEach((el) => (el.innerHTML = createAvatarHTML(currentUser)));
+
+    const usernameEls = document.querySelectorAll(".self-username");
+    usernameEls?.forEach((el) => (el.textContent = getUserName(currentUser)));
+  }
+
+  const settingEls = document.querySelectorAll(`[data-setting-id]`);
+  settingEls.forEach((el) => {
+    const setting = currentSettings[el.dataset.settingId];
+
+    const checkbox = el.querySelector("input");
+    if (checkbox) checkbox.checked = setting;
+
+    const descEl = el.querySelector(".desc");
+    if (descEl) descEl.textContent = setting ? "Enabled" : "Disabled";
   });
-
-  const usernameEls = document.querySelectorAll(".self-username");
-  usernameEls?.forEach((el) => {
-    el.textContent = getUserName(currentUser);
-  });
-
-  const themeCheckboxes = document.querySelectorAll(".item-theme input");
-  const themeDescEls = document.querySelectorAll(".item-theme .desc");
-  themeCheckboxes?.forEach((el) => (el.checked = darkTheme));
-  themeDescEls?.forEach((el) => (el.textContent = darkTheme ? "Enabled" : "Disabled"));
 }
 
 function handleUnavailable() {
@@ -41,16 +49,16 @@ function handleUnavailable() {
 }
 
 function getUserName(user) {
-  return user.displayName || user.email || "Anonymous User";
+  return user.name || user.displayName || user.email || "Anonymous User";
 }
 
 function getAvatarImage(data) {
-  const imageUrl = data.photoUrl || data.avatar;
+  const imageUrl = data.photoUrl || data.avatarUrl;
   if (imageUrl) return imageUrl;
 }
 
 function getAvatarLetter(data) {
-  const userName = data.displayName || data.email || data.authorName || "Anonymous User";
+  const userName = data.name || data.displayName || data.email || data.authorName || "Anonymous User";
   const letter = escapeHTML(userName.charAt(0).toUpperCase());
 
   return letter;
@@ -70,10 +78,10 @@ function goToProfilePage(userId) {
   changePage("profile", `?user_id=${userId}`);
 }
 
-function toggleTheme(force) {
-  darkTheme = force !== undefined ? force : !darkTheme;
-  save("darkTheme", darkTheme);
-  document.body.classList.toggle("dark-theme", darkTheme);
+function toggleSetting(name, force) {
+  currentSettings[name] = force !== undefined ? force : !currentSettings[name];
+  save("currentSettings", currentSettings);
+  updateUI();
 }
 
 function protectPage() {

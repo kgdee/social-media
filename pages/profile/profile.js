@@ -1,6 +1,6 @@
 const postList = document.querySelector(".post-list");
 
-let currentTarget = null;
+let targetUser = null;
 let currentPosts = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function initPage() {
+  loading(true);
   for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal, SettingsModal]) {
     await component.render();
   }
@@ -15,27 +16,23 @@ async function initPage() {
   await checkUrl();
 
   updateUI();
+  updatePageUI();
+  loading(false);
 }
 
 async function checkUrl() {
-  loading(true);
   // 1. If user entered a URL with ?post_id=ID, load the data and show the modal
   const params = new URLSearchParams(window.location.search);
   const userId = params.get("user_id");
 
   if (userId) {
     const user = await Firebase.getUser(userId);
-    if (!user) {
-      loading(false);
-      return;
-    }
+    if (!user) return;
 
-    await Firebase.loadPosts(user.id, onPostsLoaded);
+    targetUser = user;
 
-    console.log("Profile page:", user);
+    await Firebase.loadPosts(targetUser.id, onPostsLoaded);
   }
-
-  loading(false);
 }
 
 function getPost(postId) {
@@ -51,4 +48,15 @@ function onPostsLoaded(posts) {
 function renderPosts(posts) {
   posts = posts || currentPosts;
   postList.innerHTML = posts.map((post) => PostCard.createHTML(post)).join("") || `<div class="message center">No posts yet. Be the first to say something!</div>`;
+}
+
+function updatePageUI() {
+  const avatarEl = document.querySelector(".profile-display .avatar");
+  avatarEl.innerHTML = createAvatarHTML(targetUser);
+
+  const nameEl = document.querySelector(".profile-display .name");
+  nameEl.textContent = getUserName(targetUser);
+
+  const bioEl = document.querySelector(".profile-display .bio");
+  bioEl.textContent = targetUser?.bio || "No bio";
 }

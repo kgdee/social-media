@@ -18,6 +18,7 @@
   .author-info {
     display: flex;
     flex-direction: column;
+    gap: 3px;
   }
 
   .name {
@@ -27,7 +28,7 @@
 
   .time {
     font-size: 13px;
-    color: var(--text-muted);
+    color: var(--color-text-muted);
   }
 
   .post-body {
@@ -46,7 +47,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 10px 20px;
+    padding: 10px 20px 0px 20px;
     border-top: 1px solid var(--color-border);
   }
 

@@ -13,6 +13,7 @@
     padding: 1rem 1.5rem;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
   }
 
   .item .info {
@@ -28,7 +29,6 @@
 
   .item .desc {
     font-size: 0.8rem;
-    color: var(--text-muted);
   }
 
   .item .arrow {

@@ -25,14 +25,14 @@
             <div class="arrow">›</div>
           </label>
   
-          <label class="item item-theme">
+          <label class="item" data-setting-id="darkTheme">
             <i class="bi bi-moon"></i>
             <div class="info">
               Dark theme
               <span class="desc">Enabled</span>
             </div>
             <label class="toggle">
-              <input type="checkbox" onchange="MenuModal.handleThemeToggle()" />
+              <input type="checkbox" onchange="toggleSetting('darkTheme')" />
               <span class="slider"></span>
             </label>
           </label>

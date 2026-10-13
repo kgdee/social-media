@@ -50,7 +50,8 @@ const Firebase = (() => {
   });
 
   function getUserName() {
-    return currentUser.displayName || currentUser.email || "Anonymous User";
+    const user = currentUser;
+    return user.name || user.displayName || user.email || "Anonymous User";
   }
 
   function getUserAvatarUrl() {

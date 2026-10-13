@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function initPage() {
+  loading(true);
   for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal, SettingsModal]) {
     await component.render();
   }
@@ -17,31 +18,25 @@ async function initPage() {
   await checkUrl();
 
   updateUI();
+  loading(false);
 }
 
 async function checkUrl() {
-  loading(true);
   // 1. If user entered a URL with ?post_id=ID, load the data and show the modal
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("post_id");
 
   if (postId) {
     const post = await Firebase.getPost(postId);
-    if (!post) {
-      loading(false);
-      return;
-    }
+    if (!post) return;
 
     await Firebase.countPostShare(post.id);
 
     await PostModal.open(post.authorId, post.id);
-  } else {
-    // const userId = params.get("user_id");
   }
 
   // 2. Immediately reset address bar back to base URL without reloading
   window.history.replaceState({}, "", window.location.pathname);
-  loading(false);
 }
 
 function getPost(postId) {
