@@ -10,7 +10,7 @@ const PostModal = (() => {
     titleEl = element.querySelector(".modal-title");
     postCardContainer = document.querySelector(".post-card-container");
 
-    await CommentsSection.render()
+    await CommentsSection.render();
   }
 
   function refresh() {
@@ -20,6 +20,8 @@ const PostModal = (() => {
   }
 
   async function open(authorId, postId) {
+    if (isLoading) return;
+    loading(true);
     currentPost = getPost(postId) || (await Firebase.getPost(postId));
     const author = await Firebase.getUser(authorId);
 
@@ -30,6 +32,7 @@ const PostModal = (() => {
     await CommentsSection.loadComments(currentPost.id);
 
     element.classList.toggle("hidden", false);
+    loading(false);
   }
 
   function close() {

@@ -19,7 +19,7 @@ const CommentsSection = (() => {
       <div class="item" data-id="${comment.id}">
         ${createAvatarHTML(comment)}
         <div class="content">
-          <div class="title">${comment.authorName} <span>${formatTime(comment.timestamp)}</span></div>
+          <div class="title">${escapeHTML(comment.authorName)} <span>${formatTime(comment.timestamp)}</span></div>
           <p class="text">${escapeHTML(comment.text)}</p>
           <div class="actions">
             <button class="like-btn" onclick="CommentsSection.reactComment('${comment.id}', 'like')">

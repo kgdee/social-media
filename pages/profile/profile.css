@@ -7,6 +7,7 @@
   }
 
   .profile-display {
+    position: relative;
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -14,12 +15,7 @@
 
   .profile-display .avatar {
     width: 100px;
-  }
-
-  .profile-display .header {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    font-size: 2rem;
   }
 
   .profile-display .info {
@@ -27,11 +23,18 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 3px;
   }
 
-  .profile-display .title {
+  .profile-display .name {
     font-size: 1.2rem;
     font-weight: bold;
+  }
+
+  .profile-display .actions {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   .tabs-bar {

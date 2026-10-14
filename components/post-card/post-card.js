@@ -1,6 +1,6 @@
 const PostCard = (() => {
   function createHTML(post) {
-    const authorName = escapeHTML(post.authorName || "Anonymous User");
+    const authorName = getUserName(post);
     const timeString = formatTime(post.timestamp);
     const content = escapeHTML(post.content);
     const imageUrl = escapeHTML(post.imageUrl);

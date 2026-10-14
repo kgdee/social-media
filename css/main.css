@@ -163,7 +163,7 @@ textarea {
   gap: 5px;
 }
 
-.subtitle, .desc {
+.subtitle, .desc, .bio {
   color: var(--color-text-muted);
 }
 

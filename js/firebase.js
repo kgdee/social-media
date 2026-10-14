@@ -45,7 +45,11 @@ const Firebase = (() => {
   auth.onAuthStateChanged(async (user) => {
     currentUser = user;
     protectPage();
-    if (currentUser) await loadUser();
+    if (currentUser)
+      await loadUser(currentUser.uid, (user) => {
+        currentUser = user;
+        updateUI();
+      });
     window.initPage?.();
   });
 
@@ -56,6 +60,13 @@ const Firebase = (() => {
 
   function getUserAvatarUrl() {
     return currentUser.avatarUrl || currentUser.photoURL || null;
+  }
+
+  async function docExists(collectionName, id) {
+    const docRef = db.collection(collectionName).doc(id);
+    const doc = await docRef.get();
+    if (!doc.exists) return false;
+    return true;
   }
 
   async function login(data) {
@@ -105,19 +116,17 @@ const Firebase = (() => {
     }
   }
 
-  function loadUser() {
-    const userId = currentUser.uid;
+  function loadUser(userId, onLoaded) {
     const userRef = db.collection("users").doc(userId);
 
-    if (unsubscribe.user) unsubscribe.user();
-    unsubscribe.user = userRef.onSnapshot(
+    if (unsubscribe[`user${userId}`]) unsubscribe[`user${userId}`]();
+    unsubscribe[`user${userId}`] = userRef.onSnapshot(
       (snapshot) => {
         if (snapshot.exists) {
           const docData = snapshot.data();
-          const user = { id: snapshot.id, ...docData };
+          const user = { uid: snapshot.id, id: snapshot.id, email: currentUser.email, ...docData };
 
-          currentUser = { uid: userId, email: currentUser.email, ...user };
-          updateUI();
+          onLoaded(user);
         }
       },
       (error) => handleError(error),
@@ -156,6 +165,47 @@ const Firebase = (() => {
       );
 
       notify("User updated successfully.");
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function isUserFollowed(followerId, followingId) {
+    const followsQS = await db.collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
+    if (followsQS.empty) return false;
+    return true;
+  }
+
+  async function followUser(followerId, followingId) {
+    try {
+      let followMode = true;
+      const followingRef = db.collection("users").doc(followingId);
+
+      const followsQS = await db.collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
+
+      const batch = db.batch();
+
+      if (!followsQS.empty) {
+        // Unfollow
+        batch.delete(followsQS.docs[0].ref);
+        followMode = false;
+      } else {
+        // Follow
+        const followRef = db.collection("follows").doc();
+        batch.set(followRef, {
+          followerId: followerId,
+          followingId: followingId,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+
+      batch.update(followingRef, {
+        followCount: firebase.firestore.FieldValue.increment(followMode ? 1 : -1),
+      });
+
+      await batch.commit();
+
+      notify(`User ${!followMode ? "un" : ""}followed successfully.`);
     } catch (error) {
       handleError(error);
     }
@@ -442,5 +492,27 @@ const Firebase = (() => {
     }
   }
 
-  return { initAuth, login, signup, logout, getUser, loadUsers, loadUser, setUser, deleteUser, createPost, getPost, loadPosts, setPost, deletePost, reactPost, countPostShare, commentPost, loadComments, reactComment };
+  return {
+    initAuth,
+    login,
+    signup,
+    logout,
+    getUser,
+    loadUsers,
+    loadUser,
+    setUser,
+    isUserFollowed,
+    followUser,
+    deleteUser,
+    createPost,
+    getPost,
+    loadPosts,
+    setPost,
+    deletePost,
+    reactPost,
+    countPostShare,
+    commentPost,
+    loadComments,
+    reactComment,
+  };
 })();

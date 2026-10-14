@@ -55,12 +55,11 @@ function onPostsLoaded(posts) {
 
 function renderPosts(posts) {
   posts = posts || currentPosts;
-  postList.innerHTML = posts.map((post) => PostCard.createHTML(post)).join("") || `<div class="message center">No posts yet. Be the first to say something!</div>`;
+  postList.innerHTML = posts.map((post) => PostCard.createHTML(post)).join("") || `<div class="message center">No posts</div>`;
 }
 
 async function renderUsers(users) {
   const itemList = document.querySelector(".people-widget .item-list");
-
   itemList.innerHTML =
     users
       .map((user) => {
@@ -69,10 +68,10 @@ async function renderUsers(users) {
         <button class="close-btn btn-icon">
           <i class="bi bi-x-lg"></i>
         </button>
-        <div class="avatar-container">
+        <div class="avatar-container" onclick="goToProfilePage('${user.id}')">
           ${createAvatarHTML(user)}
         </div>
-        <div class="name">${user.name}</div>
+        <div class="name">${escapeHTML(user.name)}</div>
         <button class="button add-btn"><i class="bi bi-person-fill-add"></i>Add friend</button>
       </div>
     `;

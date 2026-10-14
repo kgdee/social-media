@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function changePage(name, params = "") {
   const targetPath = `/pages/${name}/${name}.html`;
   if (window.location.pathname.includes(targetPath)) return;
-  window.location.replace(`${targetPath}${params}`);
+  window.location.href = `${targetPath}${params}`;
 }
 
 function loading(state = true) {
@@ -26,7 +26,7 @@ function updateUI() {
 
   if (currentUser) {
     const avatarEls = document.querySelectorAll(".self-avatar");
-    avatarEls?.forEach((el) => (el.innerHTML = createAvatarHTML(currentUser)));
+    avatarEls?.forEach((el) => (el.innerHTML = createAvatarHTML(currentUser, false)));
 
     const usernameEls = document.querySelectorAll(".self-username");
     usernameEls?.forEach((el) => (el.textContent = getUserName(currentUser)));
@@ -44,12 +44,8 @@ function updateUI() {
   });
 }
 
-function handleUnavailable() {
-  Toast.show("Coming soon!");
-}
-
-function getUserName(user) {
-  return user.name || user.displayName || user.email || "Anonymous User";
+function getUserName(data) {
+  return data.name || data.displayName || data.email || data.authorName || "Anonymous User";
 }
 
 function getAvatarImage(data) {
@@ -64,13 +60,13 @@ function getAvatarLetter(data) {
   return letter;
 }
 
-function createAvatarHTML(data) {
+function createAvatarHTML(data, isOuter = true) {
   const imageUrl = getAvatarImage(data);
 
-  if (imageUrl) return `<img class="avatar" src="${imageUrl}">`;
+  if (imageUrl) return `<img${isOuter ? ` class="avatar"` : ""} src="${imageUrl}">`;
 
   const letter = getAvatarLetter(data);
-  return `<div class="avatar">${letter}</div>`;
+  return `<div${isOuter ? ` class="avatar"` : ""}>${letter}</div>`;
 }
 
 function goToProfilePage(userId) {
@@ -95,7 +91,15 @@ function protectPage() {
   }
 }
 
+async function logout() {
+  if (isLoading) return;
+  loading(true);
+  await Firebase.logout();
+  loading(false);
+}
+
 function debug() {
+  console.log("targetUser", targetUser);
   console.log("currentPosts", currentPosts);
 }
 

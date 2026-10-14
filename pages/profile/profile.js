@@ -1,6 +1,8 @@
+const profileDisplay = document.querySelector(".profile-display");
 const postList = document.querySelector(".post-list");
 
 let targetUser = null;
+let isOwner = false;
 let currentPosts = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,8 +17,6 @@ async function initPage() {
 
   await checkUrl();
 
-  updateUI();
-  updatePageUI();
   loading(false);
 }
 
@@ -29,10 +29,19 @@ async function checkUrl() {
     const user = await Firebase.getUser(userId);
     if (!user) return;
 
-    targetUser = user;
-
-    await Firebase.loadPosts(targetUser.id, onPostsLoaded);
+    Firebase.loadUser(user.id, onUserLoaded);
+  } else {
+    changePage("home");
   }
+}
+
+function onUserLoaded(user) {
+  targetUser = user;
+  isOwner = targetUser.uid === user.uid;
+
+  Firebase.loadPosts(targetUser.id, onPostsLoaded);
+  updateUI();
+  updatePageUI();
 }
 
 function getPost(postId) {
@@ -47,16 +56,33 @@ function onPostsLoaded(posts) {
 
 function renderPosts(posts) {
   posts = posts || currentPosts;
-  postList.innerHTML = posts.map((post) => PostCard.createHTML(post)).join("") || `<div class="message center">No posts yet. Be the first to say something!</div>`;
+  postList.innerHTML = posts.map((post) => PostCard.createHTML(post)).join("") || `<div class="message center">No posts</div>`;
 }
 
-function updatePageUI() {
-  const avatarEl = document.querySelector(".profile-display .avatar");
-  avatarEl.innerHTML = createAvatarHTML(targetUser);
+async function updatePageUI() {
+  const isUserFollowed = await Firebase.isUserFollowed(currentUser.uid, targetUser.id);
 
-  const nameEl = document.querySelector(".profile-display .name");
-  nameEl.textContent = getUserName(targetUser);
+  profileDisplay.innerHTML = `
+    ${createAvatarHTML(targetUser)}
+    <div class="info">
+      <div class="name">${escapeHTML(getUserName(targetUser))}</div>
+      <div class="subtitle">${targetUser?.followCount || 0} followers</div>
+      <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
+    </div>
+    <div class="actions">
+      <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-chat"></i> Message</button>
+      <button class="button follow-btn${!isOwner ? " hidden" : ""}" onclick="handleFollowUser()">
+      ${isUserFollowed ? "Unfollow" : "Follow"}</button>
+      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-plus-lg"></i> Add to story</button>
+      <button class="button${isOwner ? " hidden" : ""}" onclick="ProfileModal.open()"><i class="bi bi-pencil"></i> Edit profile</button>
+      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-chevron-up"></i></button>
+    </div>
+  `;
+}
 
-  const bioEl = document.querySelector(".profile-display .bio");
-  bioEl.textContent = targetUser?.bio || "No bio";
+async function handleFollowUser() {
+  if (isLoading) return;
+  loading(true);
+  await Firebase.followUser(currentUser.uid, targetUser.uid);
+  loading(false);
 }
