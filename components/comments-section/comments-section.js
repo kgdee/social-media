@@ -39,13 +39,8 @@ const CommentsSection = (() => {
   }
 
   async function loadComments(postId) {
-    if (isLoading) return;
-    loading(true);
     currentPostId = postId;
-
     await Firebase.loadComments(currentPostId, renderComments);
-
-    loading(false);
   }
 
   async function commentPost() {

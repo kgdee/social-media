@@ -99,8 +99,9 @@ async function logout() {
 }
 
 function debug() {
-  console.log("targetUser", targetUser);
-  console.log("currentPosts", currentPosts);
+  if (typeof currentUser !== 'undefined') console.log("currentUser", currentUser);
+  if (typeof targetUser !== 'undefined') console.log("targetUser", targetUser);
+  if (typeof currentPosts !== 'undefined') console.log("currentPosts", currentPosts);
 }
 
 const keyActions = {

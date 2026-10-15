@@ -79,21 +79,33 @@
     gap: 12px;
   }
 
-  .btn-login {
-    background-color: var(--fb-blue);
-    color: white;
-    border: none;
-    border-radius: 9999px; /* Pill shape */
-    padding: 16px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: background-color 0.2s;
+  .divider {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
   }
 
-  .btn-login:hover {
-    background-color: #005ae6;
+  .divider > * {
+    height: 0;
+  }
+
+  .divider > div {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .divider > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sso-btn {
+    background-color: var(--color-surface);
+  }
+
+  .sso-btn img {
+    width: 32px;
+    aspect-ratio: 1;
   }
 
   .forgot-link {

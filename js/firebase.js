@@ -79,6 +79,18 @@ const Firebase = (() => {
     }
   }
 
+  async function loginWithGoogle() {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const userCredential = await auth.signInWithPopup(provider);
+
+      notify("Logged in successfully.");
+      return userCredential.user;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
   async function signup(data) {
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(data.email, data.password);
@@ -495,6 +507,7 @@ const Firebase = (() => {
   return {
     initAuth,
     login,
+    loginWithGoogle,
     signup,
     logout,
     getUser,

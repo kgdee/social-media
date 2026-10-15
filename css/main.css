@@ -41,6 +41,12 @@
   border: none;
   text-decoration: none;
   line-height: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 button {
@@ -156,14 +162,20 @@ textarea {
   }
 }
 
-.title {
+.title, .name {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 5px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.subtitle, .desc, .bio {
+.subtitle,
+.desc,
+.bio {
   color: var(--color-text-muted);
 }
 

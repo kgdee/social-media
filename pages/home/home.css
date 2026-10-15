@@ -81,9 +81,11 @@
       position: relative;
       display: flex;
       gap: 5px;
+      overflow-x: auto;
     }
 
     .item-list .item {
+      flex-shrink: 0;
       position: relative;
       display: grid;
       grid-template-columns: 1fr;
@@ -116,6 +118,7 @@
 
     .item-list .item .name {
       padding: 5px;
+      align-items: flex-start;
     }
 
     .item-list .item .add-btn {

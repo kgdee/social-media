@@ -29,3 +29,13 @@ async function login(event) {
   event.target.reset();
   loading(false);
 }
+
+async function loginWithGoogle(event) {
+  if (isLoading) return;
+  loading(true);
+
+  const user = await Firebase.loginWithGoogle();
+
+  if (user) changePage("home");
+  loading(false);
+}

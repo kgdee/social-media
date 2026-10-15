@@ -37,7 +37,7 @@ async function checkUrl() {
 
 function onUserLoaded(user) {
   targetUser = user;
-  isOwner = targetUser.uid === user.uid;
+  isOwner = currentUser.uid === user.uid;
 
   Firebase.loadPosts(targetUser.id, onPostsLoaded);
   updateUI();
@@ -70,12 +70,12 @@ async function updatePageUI() {
       <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
     </div>
     <div class="actions">
-      <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-chat"></i> Message</button>
-      <button class="button follow-btn${!isOwner ? " hidden" : ""}" onclick="handleFollowUser()">
+      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-chat"></i> Message</button>
+      <button class="button follow-btn${isOwner ? " hidden" : ""}" onclick="handleFollowUser()">
       ${isUserFollowed ? "Unfollow" : "Follow"}</button>
-      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-plus-lg"></i> Add to story</button>
-      <button class="button${isOwner ? " hidden" : ""}" onclick="ProfileModal.open()"><i class="bi bi-pencil"></i> Edit profile</button>
-      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-chevron-up"></i></button>
+      <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-plus-lg"></i> Add to story</button>
+      <button class="button${!isOwner ? " hidden" : ""}" onclick="ProfileModal.open()"><i class="bi bi-pencil"></i> Edit profile</button>
+      <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-chevron-up"></i></button>
     </div>
   `;
 }
