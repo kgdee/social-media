@@ -22,7 +22,7 @@ const ProfileModal = (() => {
       avatarUrl: await handleImageFile(avatarInput.files[0], 128),
       bio: bioInput.value,
     };
-    await Firebase.setUser(currentUser.uid, data);
+    await Firebase.setUser(currentUser.id, data);
 
     close();
     loading(false);
@@ -32,7 +32,7 @@ const ProfileModal = (() => {
     if (isLoading) return;
     loading(true);
 
-    const user = (await Firebase.getUser(currentUser.uid)) || currentUser;
+    const user = (await Firebase.getUser(currentUser.id)) || currentUser;
 
     avatarPreview.src = getAvatarImage(user) || "/assets/images/default-avatar.jpg";
     nameInput.value = user?.name || "";
@@ -54,7 +54,7 @@ const ProfileModal = (() => {
   }
 
   function generateName() {
-    const names = NAMES.filter((name) => name !== nameInput.value);
+    const names = USERNAMES.filter((name) => name !== nameInput.value);
     nameInput.value = getRandomItem(names);
   }
 

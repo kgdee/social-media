@@ -70,7 +70,7 @@ function createAvatarHTML(data, isOuter = true) {
 }
 
 function goToProfilePage(userId) {
-  userId = userId || currentUser.uid;
+  userId = userId || currentUser.id;
   changePage("profile", `?user_id=${userId}`);
 }
 
@@ -98,10 +98,17 @@ async function logout() {
   loading(false);
 }
 
+async function followUser(userId) {
+  if (isLoading) return;
+  loading(true);
+  await Firebase.followUser(currentUser.id, userId);
+  loading(false);
+}
+
 function debug() {
-  if (typeof currentUser !== 'undefined') console.log("currentUser", currentUser);
-  if (typeof targetUser !== 'undefined') console.log("targetUser", targetUser);
-  if (typeof currentPosts !== 'undefined') console.log("currentPosts", currentPosts);
+  if (typeof currentUser !== "undefined") console.log("currentUser", currentUser);
+  if (typeof targetUser !== "undefined") console.log("targetUser", targetUser);
+  if (typeof currentPosts !== "undefined") console.log("currentPosts", currentPosts);
 }
 
 const keyActions = {

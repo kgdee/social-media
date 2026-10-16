@@ -99,11 +99,11 @@
     justify-content: center;
   }
 
-  .sso-btn {
+  .login-btn {
     background-color: var(--color-surface);
   }
 
-  .sso-btn img {
+  .login-btn img {
     width: 32px;
     aspect-ratio: 1;
   }

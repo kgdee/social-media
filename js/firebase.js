@@ -27,6 +27,7 @@ const Firebase = (() => {
 
   let unsubscribe = { posts: null, comments: null, users: null, user: null };
 
+  globalThis.currentAuthUser = null;
   globalThis.currentUser = null;
 
   // Mandatory Auth Before Queries Rule Implementation
@@ -43,14 +44,14 @@ const Firebase = (() => {
 
   // Listen for auth state changes
   auth.onAuthStateChanged(async (user) => {
-    currentUser = user;
+    currentAuthUser = user;
+
+    if (currentAuthUser) await syncUser();
+
     protectPage();
-    if (currentUser)
-      await loadUser(currentUser.uid, (user) => {
-        currentUser = user;
-        updateUI();
-      });
     window.initPage?.();
+
+    if (currentUser) await loadUser(currentUser.id, (user) => updateUI);
   });
 
   function getUserName() {
@@ -67,6 +68,35 @@ const Firebase = (() => {
     const doc = await docRef.get();
     if (!doc.exists) return false;
     return true;
+  }
+
+  async function syncUser() {
+    try {
+      const userId = currentAuthUser.uid;
+      const userRef = db.collection("users").doc(userId);
+      const doc = await userRef.get();
+
+      let userData = {
+        id: userId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+
+      if (doc.exists) {
+        const docData = doc.data();
+        userData = { ...userData, ...docData };
+      } else {
+        userData = {
+          ...userData,
+          name: currentAuthUser.displayName || getRandomItem(USERNAMES),
+          email: currentAuthUser.email,
+        };
+      }
+
+      await userRef.set(userData, { merge: true });
+      currentUser = userData;
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   async function login(data) {
@@ -136,7 +166,7 @@ const Firebase = (() => {
       (snapshot) => {
         if (snapshot.exists) {
           const docData = snapshot.data();
-          const user = { uid: snapshot.id, id: snapshot.id, email: currentUser.email, ...docData };
+          const user = { id: snapshot.id, email: currentUser.email, ...docData };
 
           onLoaded(user);
         }
@@ -145,7 +175,7 @@ const Firebase = (() => {
     );
   }
 
-  function loadUsers() {
+  function loadUsers(onLoaded) {
     if (unsubscribe.users) unsubscribe.users();
     unsubscribe.users = db
       .collection("users")
@@ -158,7 +188,7 @@ const Firebase = (() => {
             ...doc.data(),
           }));
 
-          renderUsers(users);
+          onLoaded(users);
         },
         (error) => handleError(error),
       );
@@ -263,7 +293,7 @@ const Firebase = (() => {
       const postRef = await db.collection("posts").add({
         content: data.content,
         imageUrl: data.imageUrl,
-        authorId: currentUser.uid,
+        authorId: currentUser.id,
         authorName: getUserName(),
         avatarUrl: getUserAvatarUrl(),
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -312,7 +342,7 @@ const Firebase = (() => {
   }
 
   async function reactPost(postId, reactType) {
-    const userId = currentUser.uid;
+    const userId = currentUser.id;
     const postRef = db.collection("posts").doc(postId);
 
     try {
@@ -355,7 +385,7 @@ const Firebase = (() => {
   }
 
   async function countPostShare(postId) {
-    const userId = currentUser.uid;
+    const userId = currentUser.id;
     const postRef = db.collection("posts").doc(postId);
 
     try {
@@ -395,7 +425,7 @@ const Firebase = (() => {
       batch.set(commentRef, {
         postId: postId,
         parentId: null,
-        authorId: currentUser.uid,
+        authorId: currentUser.id,
         authorName: getUserName(),
         avatarUrl: getUserAvatarUrl(),
         text: data.text,
@@ -462,7 +492,7 @@ const Firebase = (() => {
   }
 
   async function reactComment(commentId, reactType) {
-    const userId = currentUser.uid;
+    const userId = currentUser.id;
     const commentRef = db.collection("comments").doc(commentId);
 
     try {

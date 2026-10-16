@@ -44,7 +44,7 @@
     cursor: pointer;
   }
 
-  .create-story-widget .add-btn {
+  .create-story-widget .action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,7 +121,7 @@
       align-items: flex-start;
     }
 
-    .item-list .item .add-btn {
+    .item-list .item .action-btn {
       border-radius: unset;
     }
 

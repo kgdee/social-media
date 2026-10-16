@@ -12,7 +12,7 @@ async function initPage() {
     await component.render();
   }
 
-  await Firebase.loadUsers();
+  await Firebase.loadUsers(renderUsers);
   await Firebase.loadPosts(null, onPostsLoaded);
 
   await checkUrl();
@@ -59,11 +59,14 @@ function renderPosts(posts) {
 }
 
 async function renderUsers(users) {
+  users = users.filter((user) => user.id !== currentUser.id);
   const itemList = document.querySelector(".people-widget .item-list");
-  itemList.innerHTML =
-    users
-      .map((user) => {
-        return `
+
+  let usersHTML = "";
+  for (const user of users) {
+    const isFollowed = await Firebase.isUserFollowed(currentUser.id, user.id);
+
+    usersHTML += `
       <div class="item">
         <button class="close-btn btn-icon">
           <i class="bi bi-x-lg"></i>
@@ -72,9 +75,10 @@ async function renderUsers(users) {
           ${createAvatarHTML(user)}
         </div>
         <div class="name">${escapeHTML(user.name)}</div>
-        <button class="button add-btn"><i class="bi bi-person-fill-add"></i>Add friend</button>
+        <button class="button action-btn" onclick="followUser('${user.id}')">${!isFollowed ? "Follow" : "Unfollow"}</button>
       </div>
     `;
-      })
-      .join("") || `<div class="message center">No Users found</div>`;
+  }
+
+  itemList.innerHTML = usersHTML || `<div class="message center">No Users found</div>`;
 }

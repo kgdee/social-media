@@ -50,4 +50,4 @@ const PROFILE_PAGE_RES = [
   "/components/settings-modal/settings-modal.js",
 ];
 
-const NAMES = ["CyberViper", "DoomSlayer", "ApexPredator", "ShadowBlade", "PixelPhantom", "NeonSpecter", "IronRogue", "VoidWalker", "StormBreaker", "FrostByte", "ChaosKnight", "BlazeRunner", "QuantumHunter", "GhostProtocol", "VortexRider"];
+const USERNAMES = ["CyberViper", "DoomSlayer", "ApexPredator", "ShadowBlade", "PixelPhantom", "NeonSpecter", "IronRogue", "VoidWalker", "StormBreaker", "FrostByte", "ChaosKnight", "BlazeRunner", "QuantumHunter", "GhostProtocol", "VortexRider"];

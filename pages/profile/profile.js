@@ -37,7 +37,7 @@ async function checkUrl() {
 
 function onUserLoaded(user) {
   targetUser = user;
-  isOwner = currentUser.uid === user.uid;
+  isOwner = currentUser.id === user.id;
 
   Firebase.loadPosts(targetUser.id, onPostsLoaded);
   updateUI();
@@ -60,7 +60,7 @@ function renderPosts(posts) {
 }
 
 async function updatePageUI() {
-  const isUserFollowed = await Firebase.isUserFollowed(currentUser.uid, targetUser.id);
+  const isUserFollowed = await Firebase.isUserFollowed(currentUser.id, targetUser.id);
 
   profileDisplay.innerHTML = `
     ${createAvatarHTML(targetUser)}
@@ -71,18 +71,11 @@ async function updatePageUI() {
     </div>
     <div class="actions">
       <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-chat"></i> Message</button>
-      <button class="button follow-btn${isOwner ? " hidden" : ""}" onclick="handleFollowUser()">
+      <button class="button follow-btn${isOwner ? " hidden" : ""}" onclick="followUser('${targetUser.id}')">
       ${isUserFollowed ? "Unfollow" : "Follow"}</button>
       <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-plus-lg"></i> Add to story</button>
       <button class="button${!isOwner ? " hidden" : ""}" onclick="ProfileModal.open()"><i class="bi bi-pencil"></i> Edit profile</button>
       <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-chevron-up"></i></button>
     </div>
   `;
-}
-
-async function handleFollowUser() {
-  if (isLoading) return;
-  loading(true);
-  await Firebase.followUser(currentUser.uid, targetUser.uid);
-  loading(false);
 }

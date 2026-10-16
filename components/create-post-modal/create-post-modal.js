@@ -25,16 +25,13 @@ const CreatePostModal = (() => {
       return;
     }
 
-    try {
-      const postData = { content, imageUrl };
+    const postData = { content, imageUrl };
 
-      await Firebase.createPost(postData);
+    await Firebase.createPost(postData);
 
-      clear();
-      loading(false);
-    } catch (error) {
-      handleError(error);
-    }
+    clear();
+    toggle();
+    loading(false);
   }
 
   function toggle() {
