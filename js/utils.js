@@ -181,7 +181,7 @@ function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Failed to load image file."));
+    img.onerror = () => reject(new Error("Failed to load image."));
     img.src = src;
   });
 }
@@ -231,21 +231,25 @@ async function fetchText(url) {
   return text;
 }
 
+function createElement(htmlText) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, "text/html");
+  const element = doc.body.firstChild; // Extracts the parsed element
+  return element;
+}
+
 async function replaceElement(name) {
   const element = document.querySelector(`.${name}`);
   const htmlText = await fetchText(`/components/${name}/${name}.html`);
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlText, "text/html");
-  const newElement = doc.body.firstChild; // Extracts the parsed element
-
+  const newElement = createElement(htmlText);
   element.replaceWith(newElement);
   return newElement;
 }
 
-function loadResources(urls) {
-  urls.forEach((url) => {
+function loadHeadElement(url) {
+  return new Promise((resolve, reject) => {
     let element;
+
     if (url.endsWith(".css")) {
       element = document.createElement("link");
       element.rel = "stylesheet";
@@ -253,8 +257,19 @@ function loadResources(urls) {
     } else if (url.endsWith(".js")) {
       element = document.createElement("script");
       element.src = url;
-      element.defer = true;
+    } else {
+      return reject(new Error(`Unsupported resource type: ${url}`));
     }
+
+    element.onload = () => resolve(element);
+    element.onerror = () => reject(new Error(`Failed to load head element`));
+
     document.head.appendChild(element);
   });
+}
+
+async function loadResources(urls) {
+  for (const url of urls) {
+    await loadHeadElement(url);
+  }
 }

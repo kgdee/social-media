@@ -1,9 +1,11 @@
 const PROJECT_NAME = "social-media";
 
+const AUTH_PAGE_RES = [
+  "/components/toast/toast.css",
+  "/components/toast/toast.js",
+];
+
 const HOME_PAGE_RES = [
-  "/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css",
-  "/css/main.css",
-  "home.css",
   "/components/comments-section/comments-section.css",
   "/components/create-post-modal/create-post-modal.css",
   "/components/navbar/navbar.css",
@@ -13,7 +15,6 @@ const HOME_PAGE_RES = [
   "/components/menu-modal/menu-modal.css",
   "/components/settings-modal/settings-modal.css",
   "/components/toast/toast.css",
-  "/js/firebase.js",
   "/components/toast/toast.js",
   "/components/navbar/navbar.js",
   "/components/create-post-modal/create-post-modal.js",
@@ -26,9 +27,6 @@ const HOME_PAGE_RES = [
 ];
 
 const PROFILE_PAGE_RES = [
-  "/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css",
-  "/css/main.css",
-  "profile.css",
   "/components/comments-section/comments-section.css",
   "/components/create-post-modal/create-post-modal.css",
   "/components/navbar/navbar.css",
@@ -38,7 +36,6 @@ const PROFILE_PAGE_RES = [
   "/components/menu-modal/menu-modal.css",
   "/components/settings-modal/settings-modal.css",
   "/components/toast/toast.css",
-  "/js/firebase.js",
   "/components/toast/toast.js",
   "/components/navbar/navbar.js",
   "/components/create-post-modal/create-post-modal.js",

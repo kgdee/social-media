@@ -1,7 +1,7 @@
 const MenuModal = (() => {
   let element;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("menu-modal");
   }
 
@@ -13,5 +13,5 @@ const MenuModal = (() => {
     element.classList.toggle("hidden", true);
   }
 
-  return { render, open, close };
+  return { init, open, close };
 })();

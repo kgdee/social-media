@@ -1,9 +1,9 @@
 const Navbar = (() => {
   let element;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("navbar");
   }
 
-  return { render };
+  return { init };
 })();

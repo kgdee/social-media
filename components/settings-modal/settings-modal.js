@@ -1,7 +1,7 @@
 const SettingsModal = (() => {
   let element;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("settings-modal");
   }
 
@@ -13,5 +13,5 @@ const SettingsModal = (() => {
     element.classList.toggle("hidden", true);
   }
 
-  return { render, open, close };
+  return { init, open, close };
 })();

@@ -2,11 +2,19 @@ const CreatePostModal = (() => {
   let element;
   let contentInput;
   let imageInput;
+  let imagePreviewEl;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("create-post-modal");
     contentInput = element.querySelector(".content-input");
     imageInput = element.querySelector(".image-input input");
+    imagePreviewEl = element.querySelector(".image-preview img");
+
+    imageInput.onchange = () => {
+      const file = imageInput.files[0];
+      if (file) imagePreviewEl.src = file;
+      imagePreviewEl.classList.toggle("hidden", !file);
+    };
   }
 
   async function createPost() {
@@ -44,5 +52,5 @@ const CreatePostModal = (() => {
     imageInput.value = "";
   }
 
-  return { render, toggle, createPost };
+  return { init, toggle, createPost };
 })();

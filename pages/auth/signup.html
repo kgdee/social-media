@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Connect - Social Media</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link href="/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/utils.css" />
     <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="/css/auth.css" />
-    <link rel="stylesheet" href="/components/toast/toast.css" />
+    <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="/components/loading-overlay/loading-overlay.css" />
     <script src="/vendor/firebasejs-10.10.0/firebase-app-compat.js" defer></script>
     <script src="/vendor/firebasejs-10.10.0/firebase-auth-compat.js" defer></script>
     <script src="/vendor/firebasejs-10.10.0/firebase-firestore-compat.js" defer></script>
@@ -16,8 +17,8 @@
     <script src="/js/utils.js" defer></script>
     <script src="/js/firebase.js" defer></script>
     <script src="/js/main.js" defer></script>
-    <script src="/components/toast/toast.js" defer></script>
-    <script src="/js/auth.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="/components/loading-overlay/loading-overlay.js" defer></script>
   </head>
   <body>
     <div class="app container auth-page">
@@ -35,12 +36,12 @@
 
       <div class="auth-section">
         <div class="auth-wrapper">
-          <h2 class="title">Log in to <span>Connect</span></h2>
+          <h2 class="title">Sign up to <span>Connect</span></h2>
 
-          <form class="auth-form" onsubmit="login(event)">
+          <form class="auth-form" onsubmit="signup(event)">
             <input class="email-input" type="text" placeholder="Email address" required />
             <input class="password-input" type="password" placeholder="Password (min. 6 chars)" required minlength="6" />
-            <button type="submit" class="button">Log in</button>
+            <button type="submit" class="button">Sign up</button>
           </form>
 
           <div class="divider">
@@ -51,9 +52,7 @@
 
           <button class="login-btn button" onclick="loginWithGoogle()"><img src="/assets/images/google.png" />Continue with Google</button>
 
-          <a href="#" class="forgot-link">Forgotten password?</a>
-
-          <div class="acc-link" onclick="changePage('signup')">Create new account</div>
+          <div class="acc-link" onclick="changePage('login')">Already have an account? <span>Log in</span></div>
         </div>
 
         <div class="credit-display">
@@ -63,6 +62,7 @@
       </div>
 
       <div class="toast hidden"></div>
+      <div class="loading-overlay"></div>
     </div>
   </body>
 </html>

@@ -1,24 +1,31 @@
-let currentUser = null;
 let isLoading = false;
-const currentSettings = load("currentSettings", {
+let currentUser = null;
+let currentSettings = load("currentSettings", {
   privateAccount: false,
   notifications: true,
   dataSaver: false,
   darkTheme: false,
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {  
+  Firebase.init();
   updateUI();
 });
 
 function changePage(name, params = "") {
-  const targetPath = `/pages/${name}/${name}.html`;
+  const isAuth = name === "signup" || name === "login";
+  const targetPath = `/pages/${isAuth ? "auth" : name}/${name}.html`;
   if (window.location.pathname.includes(targetPath)) return;
   window.location.href = `${targetPath}${params}`;
 }
 
 function loading(state = true) {
   isLoading = state;
+}
+
+function loadingWithOverlay(state = true) {
+  isLoading = state;
+  LoadingOverlay.toggle(state);
 }
 
 function updateUI() {

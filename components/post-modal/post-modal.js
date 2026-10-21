@@ -5,12 +5,12 @@ const PostModal = (() => {
 
   let currentPost = null;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("post-modal");
     titleEl = element.querySelector(".modal-title");
     postCardContainer = document.querySelector(".post-card-container");
 
-    await CommentsSection.render();
+    await CommentsSection.init();
   }
 
   function refresh() {
@@ -40,5 +40,5 @@ const PostModal = (() => {
     currentPost = null;
   }
 
-  return { render, open, close, refresh };
+  return { init, open, close, refresh };
 })();

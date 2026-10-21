@@ -5,7 +5,7 @@ const ProfileModal = (() => {
   let nameInput;
   let bioInput;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("profile-modal");
     avatarInput = element.querySelector(".avatar-input input");
     avatarPreview = element.querySelector(".avatar-preview img");
@@ -62,5 +62,5 @@ const ProfileModal = (() => {
     avatarPreview.src = await handleImageFile(avatarInput.files[0]);
   }
 
-  return { render, updateUser, open, close, generateName, updateAvatarPreview };
+  return { init, updateUser, open, close, generateName, updateAvatarPreview };
 })();

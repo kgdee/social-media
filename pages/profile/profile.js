@@ -5,19 +5,13 @@ let targetUser = null;
 let isOwner = false;
 let currentPosts = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadResources(PROFILE_PAGE_RES);
-});
-
 async function initPage() {
-  loading(true);
+  await loadResources(PROFILE_PAGE_RES);
   for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal, SettingsModal]) {
-    await component.render();
+    await component.init();
   }
 
   await checkUrl();
-
-  loading(false);
 }
 
 async function checkUrl() {
@@ -70,11 +64,11 @@ async function updatePageUI() {
       <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
     </div>
     <div class="actions">
-      <button class="button${isOwner ? " hidden" : ""}"><i class="bi bi-chat"></i> Message</button>
+      <button class="button${isOwner ? " hidden" : ""}">Message</button>
       <button class="button follow-btn${isOwner ? " hidden" : ""}" onclick="followUser('${targetUser.id}')">
       ${isUserFollowed ? "Unfollow" : "Follow"}</button>
-      <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-plus-lg"></i> Add to story</button>
-      <button class="button${!isOwner ? " hidden" : ""}" onclick="ProfileModal.open()"><i class="bi bi-pencil"></i> Edit profile</button>
+      <button class="button${!isOwner ? " hidden" : ""}">Add to story</button>
+      <button class="button${!isOwner ? " hidden" : ""}" onclick="ProfileModal.open()">Edit profile</button>
       <button class="button${!isOwner ? " hidden" : ""}"><i class="bi bi-chevron-up"></i></button>
     </div>
   `;

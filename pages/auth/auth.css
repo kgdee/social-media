@@ -100,6 +100,7 @@
   }
 
   .login-btn {
+    color: var(--color-text);
     background-color: var(--color-surface);
   }
 

@@ -5,7 +5,7 @@ const Toast = (() => {
   let max = 5;
   let time = 3;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("toast");
   }
 
@@ -30,5 +30,5 @@ const Toast = (() => {
     if (element.children.length <= 0) element.classList.add("hidden");
   }
 
-  return { render, show };
+  return { init, show };
 })();

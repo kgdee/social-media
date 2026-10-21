@@ -1,3 +1,7 @@
+async function initPage() {
+  await loadResources(AUTH_PAGE_RES);
+}
+
 async function signup(event) {
   event.preventDefault();
 

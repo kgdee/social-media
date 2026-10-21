@@ -5,7 +5,7 @@ const CommentsSection = (() => {
 
   let currentPostId = null;
 
-  async function render() {
+  async function init() {
     element = await replaceElement("comments-section");
     commentList = element.querySelector(".comment-list");
     textInput = element.querySelector(".comment-input textarea");
@@ -62,5 +62,5 @@ const CommentsSection = (() => {
     loading(false);
   }
 
-  return { render, loadComments, renderComments, commentPost, reactComment };
+  return { init, loadComments, renderComments, commentPost, reactComment };
 })();

@@ -21,38 +21,37 @@ const Firebase = (() => {
   };
 
   // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
+  let app;
+  let db;
+  let auth;
 
   let unsubscribe = { posts: null, comments: null, users: null, user: null };
 
   globalThis.currentAuthUser = null;
   globalThis.currentUser = null;
 
-  // Mandatory Auth Before Queries Rule Implementation
-  async function initAuth() {
-    if (initialAuthToken) {
-      try {
-        await auth.signInWithCustomToken(initialAuthToken);
-      } catch (error) {
-        console.error("Custom token login failed", error);
-        // Let onAuthStateChanged handle the unauthenticated state
-      }
-    }
+  function init() {
+    app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    auth = firebase.auth();
+
+    // Listen for auth state changes
+    auth.onAuthStateChanged(async (user) => {
+      await LoadingOverlay.init();
+      loadingWithOverlay(true);
+
+      currentAuthUser = user;
+
+      if (currentAuthUser) await syncUser();
+
+      protectPage();
+      await window.initPage?.();
+
+      if (currentUser) await loadUser(currentUser.id, (user) => updateUI);
+
+      loadingWithOverlay(false);
+    });
   }
-
-  // Listen for auth state changes
-  auth.onAuthStateChanged(async (user) => {
-    currentAuthUser = user;
-
-    if (currentAuthUser) await syncUser();
-
-    protectPage();
-    window.initPage?.();
-
-    if (currentUser) await loadUser(currentUser.id, (user) => updateUI);
-  });
 
   function getUserName() {
     const user = currentUser;
@@ -535,7 +534,7 @@ const Firebase = (() => {
   }
 
   return {
-    initAuth,
+    init,
     login,
     loginWithGoogle,
     signup,
