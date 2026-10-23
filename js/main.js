@@ -1,3 +1,4 @@
+const urlParams = new URLSearchParams(window.location.search);
 let isLoading = false;
 let currentUser = null;
 let currentSettings = load("currentSettings", {
@@ -7,16 +8,44 @@ let currentSettings = load("currentSettings", {
   darkTheme: false,
 });
 
-document.addEventListener("DOMContentLoaded", () => {  
+document.addEventListener("DOMContentLoaded", () => {
   Firebase.init();
   updateUI();
 });
 
+async function onAuthStateChanged(user) {
+  await LoadingOverlay.init();
+  loadingWithOverlay(true);
+
+  currentAuthUser = user;
+
+  if (currentAuthUser) await Firebase.syncUser();
+  else currentUser = null;
+
+  protectPage();
+  await window.initPage?.();
+
+  if (currentUser) await Firebase.loadUser(currentUser.id, (user) => updateUI);
+
+  loadingWithOverlay(false);
+}
+
 function changePage(name, params = "") {
-  const isAuth = name === "signup" || name === "login";
+  const isAuth = ["signup", "login", "password-reset", "action"].includes(name);
   const targetPath = `/pages/${isAuth ? "auth" : name}/${name}.html`;
   if (window.location.pathname.includes(targetPath)) return;
   window.location.href = `${targetPath}${params}`;
+}
+
+function protectPage() {
+  const currentPath = window.location.pathname;
+  const publicPages = ["signup", "login", "password-reset", "action"];
+
+  // If the user is logged in, do nothing—let them stay anywhere.
+  // If they are NOT logged in and NOT on a public page, redirect to login.
+  if (!currentAuthUser && !publicPages.some((item) => currentPath.includes(`/${item}.html`))) {
+    changePage("login");
+  }
 }
 
 function loading(state = true) {
@@ -87,17 +116,6 @@ function toggleSetting(name, force) {
   updateUI();
 }
 
-function protectPage() {
-  const currentPath = window.location.pathname;
-  const publicPages = ["/login.html", "/signup.html"];
-
-  // If the user is logged in, do nothing—let them stay anywhere.
-  // If they are NOT logged in and NOT on a public page, redirect to login.
-  if (!currentUser && !publicPages.some((item) => currentPath.includes(item))) {
-    changePage("login");
-  }
-}
-
 async function logout() {
   if (isLoading) return;
   loading(true);
@@ -109,6 +127,17 @@ async function followUser(userId) {
   if (isLoading) return;
   loading(true);
   await Firebase.followUser(currentUser.id, userId);
+  loading(false);
+}
+
+async function deleteAccount() {
+  if (isLoading) return;
+
+  const confirmed = await ConfirmModal.confirmAction(`Delete account?`, "This action cannot be undone.");
+  if (!confirmed) return;
+
+  loading(true);
+  await Firebase.deleteUser(currentUser.id);
   loading(false);
 }
 

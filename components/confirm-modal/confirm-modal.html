@@ -1,0 +1,14 @@
+<div class="confirm-modal modal hidden" onclick="ConfirmModal.close()">
+  <div class="modal-content" onclick="stopPropagation(event)">
+    <button class="close-btn" onclick="ConfirmModal.close()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="modal-title">Delete item</div>
+    <div class="msg">Are you sure you want to delete "item"</div>
+
+    <div class="modal-actions">
+      <button class="button" onclick="ConfirmModal.close()">Cancel</button>
+      <button class="button btn-danger" onclick="ConfirmModal.close(true)">Confirm</button>
+    </div>
+  </div>
+</div>

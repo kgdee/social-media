@@ -1,3 +1,0 @@
-function initPage() {
-  changePage("home");
-}

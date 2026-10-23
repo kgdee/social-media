@@ -3,22 +3,22 @@ const Firebase = (() => {
   // https://firebase.google.com/docs/web/setup#available-libraries
 
   // Your web app's Firebase configuration
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyBI2oALBTbtbEeyZqH-z1yp4l8DPlxYJWw",
-  //   authDomain: "social-media-75b1b.firebaseapp.com",
-  //   projectId: "social-media-75b1b",
-  //   storageBucket: "social-media-75b1b.firebasestorage.app",
-  //   messagingSenderId: "939854753119",
-  //   appId: "1:939854753119:web:ae1685226a6d08c4c2daea",
-  // };
   const firebaseConfig = {
-    apiKey: "AIzaSyADXieGpNZftFKRnch6debqG9APhF96MoU",
-    authDomain: "social-media-cb41e.firebaseapp.com",
-    projectId: "social-media-cb41e",
-    storageBucket: "social-media-cb41e.firebasestorage.app",
-    messagingSenderId: "951423891523",
-    appId: "1:951423891523:web:93efa354cb87b863cfbcf6",
+    apiKey: "AIzaSyBI2oALBTbtbEeyZqH-z1yp4l8DPlxYJWw",
+    authDomain: "social-media-75b1b.firebaseapp.com",
+    projectId: "social-media-75b1b",
+    storageBucket: "social-media-75b1b.firebasestorage.app",
+    messagingSenderId: "939854753119",
+    appId: "1:939854753119:web:ae1685226a6d08c4c2daea",
   };
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyADXieGpNZftFKRnch6debqG9APhF96MoU",
+  //   authDomain: "social-media-cb41e.firebaseapp.com",
+  //   projectId: "social-media-cb41e",
+  //   storageBucket: "social-media-cb41e.firebasestorage.app",
+  //   messagingSenderId: "951423891523",
+  //   appId: "1:951423891523:web:93efa354cb87b863cfbcf6",
+  // };
 
   // Initialize Firebase
   let app;
@@ -30,27 +30,18 @@ const Firebase = (() => {
   globalThis.currentAuthUser = null;
   globalThis.currentUser = null;
 
+  const actionCodeSettings = {
+    url: "http://127.0.0.1:5500/pages/auth/action.html",
+    handleCodeInApp: true,
+  };
+
   function init() {
     app = firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     auth = firebase.auth();
 
     // Listen for auth state changes
-    auth.onAuthStateChanged(async (user) => {
-      await LoadingOverlay.init();
-      loadingWithOverlay(true);
-
-      currentAuthUser = user;
-
-      if (currentAuthUser) await syncUser();
-
-      protectPage();
-      await window.initPage?.();
-
-      if (currentUser) await loadUser(currentUser.id, (user) => updateUI);
-
-      loadingWithOverlay(false);
-    });
+    auth.onAuthStateChanged(onAuthStateChanged);
   }
 
   function getUserName() {
@@ -123,8 +114,11 @@ const Firebase = (() => {
   async function signup(data) {
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(data.email, data.password);
+      const user = userCredential.user;
+      await user.sendEmailVerification(actionCodeSettings);
+
       notify("Account created successfully.");
-      return userCredential.user;
+      return user;
     } catch (error) {
       handleError(error);
     }
@@ -134,6 +128,35 @@ const Firebase = (() => {
     try {
       await auth.signOut();
       notify("Logged out successfully.");
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function sendPasswordResetEmail(email) {
+    try {
+      await auth.sendPasswordResetEmail(email, actionCodeSettings);
+      notify("Password reset email sent.");
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function resetPassword(oobCode, newPassword, confirmPassword) {
+    if (newPassword !== confirmPassword) {
+      throw new Error("Passwords do not match.");
+    }
+
+    if (!oobCode) {
+      throw new Error("Invalid or missing password reset code.");
+    }
+
+    try {
+      await auth.confirmPasswordReset(oobCode, newPassword);
+
+      notify("New password set successfully.");
+
+      return true;
     } catch (error) {
       handleError(error);
     }
@@ -257,6 +280,8 @@ const Firebase = (() => {
 
     try {
       await userRef.delete();
+
+      await auth.currentUser.delete();
 
       notify("User deleted successfully.");
     } catch (error) {
@@ -535,10 +560,13 @@ const Firebase = (() => {
 
   return {
     init,
+    syncUser,
     login,
     loginWithGoogle,
     signup,
     logout,
+    sendPasswordResetEmail,
+    resetPassword,
     getUser,
     loadUsers,
     loadUser,

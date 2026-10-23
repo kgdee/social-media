@@ -1,11 +1,4 @@
-@scope (.auth-page) {
-  input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-  }
-
+@scope (.auth-page, .auth-action-page) {
   :scope {
     position: relative;
     display: grid;
@@ -71,12 +64,6 @@
 
   .auth-wrapper .title span {
     color: var(--color-primary);
-  }
-
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
   }
 
   .divider {
@@ -175,5 +162,107 @@
 
   /* Small screens (Phones, up to 480px wide) */
   @media (max-width: 480px) {
+  }
+}
+
+@scope (.auth-form) {
+  :scope {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+  }
+}
+
+@scope (.password-reset) {
+  :scope {
+    grid-template-columns: 1fr;
+  }
+}
+
+@scope (.auth-action-page) {
+  :scope {
+    grid-template-columns: 1fr;
+  }
+
+  @scope (.verify-email) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-success);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-success);
+    }
+  }
+
+  @scope (.recover-email) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-warning);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-warning);
+    }
+  }
+
+  @scope (.invalid) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-danger);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-danger);
+    }
   }
 }

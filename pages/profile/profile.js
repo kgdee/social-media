@@ -7,7 +7,7 @@ let currentPosts = [];
 
 async function initPage() {
   await loadResources(PROFILE_PAGE_RES);
-  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, MenuModal, SettingsModal]) {
+  for (const component of [Toast, Navbar, CreatePostModal, PostModal, ProfileModal, ConfirmModal, MenuModal, SettingsModal]) {
     await component.init();
   }
 
@@ -15,9 +15,7 @@ async function initPage() {
 }
 
 async function checkUrl() {
-  // 1. If user entered a URL with ?post_id=ID, load the data and show the modal
-  const params = new URLSearchParams(window.location.search);
-  const userId = params.get("user_id");
+  const userId = urlParams.get("user_id");
 
   if (userId) {
     const user = await Firebase.getUser(userId);

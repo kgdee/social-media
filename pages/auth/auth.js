@@ -1,5 +1,9 @@
 async function initPage() {
   await loadResources(AUTH_PAGE_RES);
+  
+  for (const component of [Toast]) {
+    await component.init();
+  }
 }
 
 async function signup(event) {
@@ -41,5 +45,18 @@ async function loginWithGoogle(event) {
   const user = await Firebase.loginWithGoogle();
 
   if (user) changePage("home");
+  loading(false);
+}
+
+async function sendPasswordResetEmail(event) {
+  event.preventDefault();
+  
+  if (isLoading) return;
+  loading(true);
+
+  const email = document.querySelector(".email-input").value;
+
+  await Firebase.sendPasswordResetEmail(email);
+
   loading(false);
 }
