@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect - Social Media</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/vendor/bootstrap-icons-1.13.1/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/utils.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="profile.css" />
+    <script src="/vendor/firebasejs-10.10.0/firebase-app-compat.js" defer></script>
+    <script src="/vendor/firebasejs-10.10.0/firebase-auth-compat.js" defer></script>
+    <script src="/vendor/firebasejs-10.10.0/firebase-firestore-compat.js" defer></script>
+    <script src="/config.js" defer></script>
+    <script src="/js/constants.js" defer></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/firebase.js" defer></script>
+    <script src="/js/main.js" defer></script>
+    <script src="profile.js" defer></script>
+  </head>
+  <body>
+    <div class="app profile-page">
+      <div class="navbar"></div>
+
+      <main class="container">
+        <img src="/assets/images/post-image.png" class="banner" />
+        <div class="profile-display"></div>
+
+        <div class="tabs-bar">
+          <div class="item-list">
+            <div class="item active">All</div>
+            <div class="item">About</div>
+            <div class="item">Reels</div>
+            <div class="item">Photos</div>
+            <div class="item">Followers</div>
+            <div class="item">More ▾</div>
+          </div>
+
+          <button class="more-btn">•••</button>
+        </div>
+
+        <div class="post-list">
+          <div class="message center">Loading posts...</div>
+        </div>
+
+        <div class="msg-overlay hidden">
+          User not found.
+          <div class="link" onclick="changePage('home')">Go to Homepage</div>
+        </div>
+      </main>
+
+      <div class="menu-modal"></div>
+      <div class="settings-modal"></div>
+      <div class="post-modal"></div>
+      <div class="create-post-modal"></div>
+      <div class="profile-modal"></div>
+      <div class="confirm-modal"></div>
+      <div class="toast"></div>
+      <div class="loading-overlay"></div>
+    </div>
+  </body>
+</html>

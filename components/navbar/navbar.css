@@ -1,0 +1,28 @@
+@scope (.navbar) {
+  :scope {
+    position: sticky;
+    width: 100%;
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .email-display {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+}

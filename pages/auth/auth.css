@@ -1,0 +1,263 @@
+@scope (.auth-page, .auth-action-page) {
+  :scope {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .logo {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  .hero-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--color-border);
+    padding: 10px;
+    padding-left: 50px;
+  }
+
+  .hero-section .collage-img {
+    width: 400px;
+  }
+
+  .headline {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 20px;
+  }
+
+  .headline span {
+    color: var(--color-primary);
+  }
+
+  .auth-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .auth-wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .auth-wrapper .title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .auth-wrapper .title span {
+    color: var(--color-primary);
+  }
+
+  .divider {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
+  }
+
+  .divider > * {
+    height: 0;
+  }
+
+  .divider > div {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .divider > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-btn {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+  }
+
+  .login-btn img {
+    width: 32px;
+    aspect-ratio: 1;
+  }
+
+  .password-reset-link {
+    text-align: center;
+  }
+
+  .acc-link {
+    cursor: pointer;
+    color: var(--color-primary);
+    padding: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .credit-display {
+    position: absolute;
+    bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .meta-icon {
+    width: 24px;
+    height: auto;
+    fill: currentColor;
+  }
+
+  /* Medium screens (Tablets, up to 768px wide) */
+  @media (max-width: 768px) {
+    :scope {
+      grid-template-columns: 1fr;
+    }
+
+    .logo {
+      top: 10px;
+      left: 10px;
+    }
+
+    .hero-section {
+      display: none;
+    }
+    .content-area {
+      margin-left: 0;
+      margin-top: 40px; /* Space for absolute logo */
+    }
+    .headline {
+      font-size: 2.5rem;
+    }
+    .meta-footer {
+      position: relative;
+      margin-top: 40px;
+      bottom: auto;
+    }
+  }
+
+  /* Small screens (Phones, up to 480px wide) */
+  @media (max-width: 480px) {
+  }
+}
+
+@scope (.auth-form) {
+  :scope {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+  }
+}
+
+@scope (.password-reset) {
+  :scope {
+    grid-template-columns: 1fr;
+  }
+}
+
+@scope (.auth-action-page) {
+  :scope {
+    grid-template-columns: 1fr;
+  }
+
+  @scope (.reset-password-success, .verify-email) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-success);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-success);
+    }
+  }
+
+  @scope (.recover-email) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-warning);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-warning);
+    }
+  }
+
+  @scope (.invalid) {
+    :scope {
+      background-color: var(--color-surface);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      aspect-ratio: 1;
+      font-size: 2rem;
+      color: var(--color-danger);
+      background-color: var(--color-bg);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .notice {
+      color: var(--color-danger);
+    }
+  }
+}

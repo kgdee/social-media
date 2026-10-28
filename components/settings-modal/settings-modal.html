@@ -1,0 +1,75 @@
+<div class="settings-modal modal hidden" onclick="SettingsModal.close()">
+  <div class="modal-content" onclick="stopPropagation(event)">
+    <div class="modal-header">
+      <div class="title">Settings</div>
+      <button class="close-btn" onclick="SettingsModal.close()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body item-list">
+      <!-- Edit Profile -->
+      <div class="item" onclick="ProfileModal.open()">
+        <div class="info">
+          <span class="title">Edit Profile</span>
+          <span class="desc">Change photo, bio, and display name</span>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+
+      <!-- Private Account Toggle -->
+      <label class="item" data-setting-id="privateAccount">
+        <div class="info">
+          <span class="title">Private Account</span>
+          <span class="desc">Only approved followers can see your posts</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" onchange="toggleSetting('privateAccount')" />
+          <span class="slider"></span>
+        </label>
+      </label>
+
+      <!-- Push Notifications Toggle -->
+      <label class="item" data-setting-id="notifications">
+        <div class="info">
+          <span class="title">Push Notifications</span>
+          <span class="desc">Get notified about likes, comments, and messages</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked onchange="toggleSetting('notifications')" />
+          <span class="slider"></span>
+        </label>
+      </label>
+
+      <!-- Data Saver / Autoplay Toggle -->
+      <label class="item" data-setting-id="dataSaver">
+        <div class="info">
+          <span class="title">Data Saver Mode</span>
+          <span class="desc">Reduce video quality and disable media autoplay</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" onchange="toggleSetting('dataSaver')" />
+          <span class="slider"></span>
+        </label>
+      </label>
+
+      <!-- Dark Theme Toggle -->
+      <label class="item" data-setting-id="darkTheme">
+        <div class="info">
+          <span class="title">Dark Theme</span>
+          <span class="desc">Switch between light and dark mode appearance</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" onchange="toggleSetting('darkTheme')" />
+          <span class="slider"></span>
+        </label>
+      </label>
+
+      <!-- Delete account -->
+      <div class="item hidden" onclick="deleteAccount()">
+        <div class="info">
+          <span class="title">Delete account</span>
+          <span class="desc">Permanently remove your account and all associated data.</span>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>

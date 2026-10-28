@@ -1,0 +1,146 @@
+@scope (.home-page) {
+  :scope {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .feed-container {
+    overflow-y: auto;
+  }
+
+  .feed-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .create-post-widget .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .create-post-widget .content-input {
+    flex: 1;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .create-post-widget .image-input {
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--color-green);
+  }
+
+  @scope (.create-story-widget) {
+    :scope {
+      cursor: pointer;
+    }
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      border-radius: 50%;
+      background-color: var(--color-bg);
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+  }
+
+  @scope (.people-widget) {
+    :scope {
+      display: flex;
+      flex-direction: column;
+      align-items: initial;
+    }
+
+    .menu-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      font-size: 1.2rem;
+    }
+
+    .item-list {
+      position: relative;
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+    }
+
+    .item-list .item {
+      flex-shrink: 0;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 5fr 2fr 1fr;
+      width: 150px;
+      aspect-ratio: 2 / 3;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .item-list .item .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .item-list .item .avatar-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-bg);
+      cursor: pointer;
+    }
+
+    .item-list .item .avatar {
+      width: 64px;
+    }
+
+    .item-list .item .name {
+      padding: 5px;
+      align-items: flex-start;
+    }
+
+    .item-list .item .action-btn {
+      border-radius: unset;
+    }
+
+    .expand-btn {
+      font-weight: bold;
+      background-color: transparent;
+      color: var(--color-primary);
+      padding: 10px;
+      text-align: center;
+    }
+  }
+
+  /* Medium screens (Tablets, up to 768px wide) */
+  @media (max-width: 768px) {
+  }
+
+  /* Small screens (Phones, up to 480px wide) */
+  @media (max-width: 480px) {
+  }
+}

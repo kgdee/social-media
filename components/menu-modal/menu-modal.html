@@ -1,0 +1,51 @@
+<div class="menu-modal list-modal modal hidden" onclick="MenuModal.close()">
+  <div class="container">
+    <div class="modal-content" onclick="stopPropagation(event)">
+      <button class="close-btn" onclick="MenuModal.close()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="title">Menu</div>
+
+      <div class="modal-body">
+        <div class="profile-display" onclick="goToProfilePage()">
+          <div class="avatar self-avatar"></div>
+          <span class="self-username">User name</span>
+        </div>
+
+        <div class="item-list">
+          <label class="item" onclick="SettingsModal.open()">
+            <i class="bi bi-gear"></i>
+            <div class="info">Settings & privacy</div>
+            <div class="arrow">›</div>
+          </label>
+  
+          <label class="item">
+            <i class="bi bi-question-circle"></i>
+            <div class="info">Help & support</div>
+            <div class="arrow">›</div>
+          </label>
+  
+          <label class="item" data-setting-id="darkTheme">
+            <i class="bi bi-moon"></i>
+            <div class="info">
+              Dark theme
+              <span class="desc">Enabled</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" onchange="toggleSetting('darkTheme')" />
+              <span class="slider"></span>
+            </label>
+          </label>
+  
+          <label class="item" onclick="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            <div class="info">Log out</div>
+            <div class="arrow">›</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">Privacy · Terms · Advertising · Ad choices ▷ · Cookies · More</div>
+    </div>
+  </div>
+</div>
