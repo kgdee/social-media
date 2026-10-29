@@ -1,3 +1,31 @@
+const Supabase = (() => {
+  const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+  const bucketName = "files";
+
+  async function uploadFile(file, id, fileName) {
+    const filePath = `${PROJECT_NAME}/${id}/${fileName}`;
+
+    await supabase.storage.from(bucketName).upload(filePath, file, { upsert: true });
+
+    // Get the Public URL of the uploaded image
+    const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(filePath);
+
+    const uploadedFileUrl = publicUrlData.publicUrl;
+    console.log("File uploaded successfully.");
+    return uploadedFileUrl;
+  }
+
+  async function removeFile(id, fileName) {
+    const filePath = `${PROJECT_NAME}/${id}/${fileName}`;
+
+    await supabase.storage.from(bucketName).remove([filePath]);
+
+    console.log("File removed successfully.");
+  }
+
+  return { uploadFile, removeFile };
+})();
+
 const Firebase = (() => {
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
@@ -244,10 +272,17 @@ const Firebase = (() => {
   async function setUser(userId, data) {
     const userRef = db.collection("users").doc(userId);
 
+    const { avatarFile, bannerFile, ...userData } = data;
+    let avatarUrl = avatarFile ? await Supabase.uploadFile(avatarFile, userId, "avatar.png") : null;
+    let bannerUrl = bannerFile ? await Supabase.uploadFile(bannerFile, userId, "banner.png") : null;
+
     try {
+      // 3. Save user data and avatar URL to Firebase Firestore
       await userRef.set(
         {
-          ...data,
+          ...userData,
+          ...(avatarUrl ? { avatarUrl } : {}),
+          ...(bannerUrl ? { bannerUrl } : {}),
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         },
         { merge: true },
@@ -354,14 +389,25 @@ const Firebase = (() => {
 
   async function createPost(data) {
     try {
-      const postRef = await db.collection("posts").add({
-        content: data.content,
-        imageUrl: data.imageUrl,
-        authorId: currentUser.id,
-        authorName: getUserName(),
-        avatarUrl: getUserAvatarUrl(),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      const id = generateId();
+      const { imageFile, ...postData } = data;
+
+      let imageUrl = null;
+      if (imageFile) {
+        imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
+      }
+
+      const postRef = await db
+        .collection("posts")
+        .doc(id)
+        .set({
+          content: postData.content,
+          ...(imageUrl ? { imageUrl } : {}),
+          authorId: currentUser.id,
+          authorName: getUserName(),
+          avatarUrl: getUserAvatarUrl(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
 
       notify("Post created successfully.");
     } catch (error) {
@@ -529,6 +575,8 @@ const Firebase = (() => {
 
       // Commit all deletions in a single batch
       await batch.commit();
+
+      await Supabase.removeFile(postId, "post-image.png");
 
       notify("Post deleted successfully.");
     } catch (error) {

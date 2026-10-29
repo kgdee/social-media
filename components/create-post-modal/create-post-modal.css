@@ -47,13 +47,6 @@
     padding: 10px;
   }
 
-  .image-preview .actions > * {
-    font-weight: 1.5rem;
-    background-color: var(--color-surface);
-    padding: 5px;
-    border-radius: 50%;
-  }
-
   .optional-input-group {
     display: flex;
     justify-content: space-between;

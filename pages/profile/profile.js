@@ -40,6 +40,16 @@ function onUserLoaded(user) {
   updatePageUI();
 }
 
+async function updateUserBanner(file) {
+  if (!file) return;
+  if (isLoading) return;
+  loading(true);
+
+  await Firebase.setUser(currentUser.id, { bannerFile: file });
+
+  loading(false);
+}
+
 function getPost(postId) {
   return currentPosts.filter((post) => post.id === postId)[0];
 }

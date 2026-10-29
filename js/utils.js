@@ -12,16 +12,12 @@ window.addEventListener("error", (event) => {
 function handleError(error) {
   console.error(error);
   alert(error);
-  if (!isLocalhost) location.reload();
+  if (!isLocalhost && window.location.pathname !== "/") window.location.href = "/";
 }
 
 function notify(message) {
   console.log(message);
   Toast?.show(message);
-}
-
-function stopPropagation(event) {
-  event.stopPropagation();
 }
 
 function generateId() {
@@ -186,7 +182,7 @@ function loadImage(src) {
   });
 }
 
-async function handleImageFile(file, maxSize = 128) {
+async function handleImageFile(file, { maxSize = 128, outputType = "file" } = {}) {
   if (!file) return null;
 
   const dataUrl = await getFileDataUrl(file);
@@ -215,9 +211,27 @@ async function handleImageFile(file, maxSize = 128) {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0, width, height);
 
-  // Return Data URL (base64 string) directly
   const mimeType = file?.type || file?.mimeType || "image/png";
-  return canvas.toDataURL(mimeType);
+
+  switch (outputType) {
+    case "file":
+      // Convert canvas to Blob, then wrap it in a File object
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, mimeType));
+      const resultFile = new File([blob], file.name || "image.png", {
+        type: mimeType,
+        lastModified: Date.now(),
+      });
+      return resultFile;
+      break;
+    case "dataUrl":
+      // Return Data URL (base64 string) directly
+      const mimeType = file?.type || file?.mimeType || "image/png";
+      const dataUrl = canvas.toDataURL(mimeType);
+      return dataUrl;
+      break;
+    default:
+      break;
+  }
 }
 
 async function copyText(text) {

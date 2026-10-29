@@ -21,17 +21,16 @@ const CreatePostModal = (() => {
     loading(true);
 
     const content = contentInput.value.trim();
-    const imageUrl = await handleImageFile(imageInput.files[0], 512);
+    const imageFile = imageInput.files[0];
 
-    if (!content && !imageUrl) {
+    if (!content && !imageFile) {
       Toast.show("Post cannot be empty.");
       loading(false);
       return;
     }
 
-    const postData = { content, imageUrl };
-
-    await Firebase.createPost(postData);
+    const data = { content, imageFile };
+    await Firebase.createPost(data);
 
     clear();
     toggle();

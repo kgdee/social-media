@@ -78,6 +78,12 @@ function updateUI() {
 
     const usernameEls = document.querySelectorAll(".self-username");
     usernameEls?.forEach((el) => (el.textContent = getUserName(currentUser)));
+
+    const bannerUrl = currentUser.bannerUrl;
+    if (bannerUrl) {
+      const bannerEls = document.querySelectorAll(".self-banner");
+      bannerEls?.forEach((el) => (el.src = bannerUrl));
+    }
   }
 
   const settingEls = document.querySelectorAll(`[data-setting-id]`);
@@ -96,7 +102,7 @@ function getUserName(data) {
   return data.name || data.displayName || data.email || data.authorName || "Anonymous User";
 }
 
-function getAvatarImage(data) {
+function getAvatarUrl(data) {
   const imageUrl = data.photoUrl || data.avatarUrl;
   if (imageUrl) return imageUrl;
 }
@@ -109,7 +115,7 @@ function getAvatarLetter(data) {
 }
 
 function createAvatarHTML(data, isOuter = true) {
-  const imageUrl = getAvatarImage(data);
+  const imageUrl = getAvatarUrl(data);
 
   if (imageUrl) return `<img${isOuter ? ` class="avatar"` : ""} src="${imageUrl}">`;
 

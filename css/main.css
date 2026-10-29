@@ -23,6 +23,19 @@ main {
   padding: 10px;
 }
 
+.circle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  aspect-ratio: 1;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
 .post-list {
   flex: 1;
   position: relative;
