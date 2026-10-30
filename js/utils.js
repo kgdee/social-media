@@ -287,3 +287,8 @@ async function loadResources(urls) {
     await loadHeadElement(url);
   }
 }
+
+function getFreshUrl(url) {
+  if (!url) return "";
+  return `${url}?t=${new Date().getTime()}`;
+}

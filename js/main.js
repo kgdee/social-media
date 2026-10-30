@@ -78,12 +78,6 @@ function updateUI() {
 
     const usernameEls = document.querySelectorAll(".self-username");
     usernameEls?.forEach((el) => (el.textContent = getUserName(currentUser)));
-
-    const bannerUrl = currentUser.bannerUrl;
-    if (bannerUrl) {
-      const bannerEls = document.querySelectorAll(".self-banner");
-      bannerEls?.forEach((el) => (el.src = bannerUrl));
-    }
   }
 
   const settingEls = document.querySelectorAll(`[data-setting-id]`);

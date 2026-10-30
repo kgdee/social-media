@@ -5,7 +5,7 @@ let currentPosts = [];
 async function initPage() {
   await loadResources(RESOURCES.home);
 
-  for (const component of [Navbar, CreatePostModal, PostModal, ProfileModal, ConfirmModal, MenuModal, SettingsModal]) {
+  for (const component of [Navbar, PostEditorModal, PostModal, ProfileModal, ConfirmModal, MenuModal, SettingsModal]) {
     await component.init();
   }
 
@@ -15,6 +15,8 @@ async function initPage() {
   await checkUrl();
 
   updateUI();
+
+  await Firebase.getPost("e672eda9386d5807df2214ad0799dd6c");
 }
 
 async function checkUrl() {

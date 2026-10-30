@@ -1,4 +1,4 @@
-@scope (.create-post-modal) {
+@scope (.post-editor-modal) {
   .modal-body {
     display: flex;
     flex-direction: column;

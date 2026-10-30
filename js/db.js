@@ -1,9 +1,10 @@
 const Supabase = (() => {
   const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
   const bucketName = "files";
+  const basePath = `projects/${PROJECT_NAME}`;
 
   async function uploadFile(file, id, fileName) {
-    const filePath = `${PROJECT_NAME}/${id}/${fileName}`;
+    const filePath = `${basePath}/${id}/${fileName}`;
 
     await supabase.storage.from(bucketName).upload(filePath, file, { upsert: true });
 
@@ -16,14 +17,22 @@ const Supabase = (() => {
   }
 
   async function removeFile(id, fileName) {
-    const filePath = `${PROJECT_NAME}/${id}/${fileName}`;
+    const filePath = `${basePath}/${id}/${fileName}`;
 
     await supabase.storage.from(bucketName).remove([filePath]);
 
     console.log("File removed successfully.");
   }
 
-  return { uploadFile, removeFile };
+  async function removeFolder(id) {
+    const folderPath = `${basePath}/${id}`;
+
+    await supabase.storage.from(bucketName).remove([folderPath]);
+
+    console.log("Folder removed successfully.");
+  }
+
+  return { uploadFile, removeFile, removeFolder };
 })();
 
 const Firebase = (() => {
@@ -64,6 +73,16 @@ const Firebase = (() => {
     auth.onAuthStateChanged(onAuthStateChanged);
   }
 
+  function collection(name) {
+    return db.collection(`projects/${PROJECT_NAME}/${name}`);
+  }
+
+  async function docExists(collectionName, id) {
+    const docSnap = await collection(collectionName).doc(id).get();
+    if (!docSnap.exists) return false;
+    return true;
+  }
+
   function getUserName() {
     const user = currentUser;
     return user.name || user.displayName || user.email || "Anonymous User";
@@ -73,26 +92,19 @@ const Firebase = (() => {
     return currentUser.avatarUrl || currentUser.photoURL || null;
   }
 
-  async function docExists(collectionName, id) {
-    const docRef = db.collection(collectionName).doc(id);
-    const doc = await docRef.get();
-    if (!doc.exists) return false;
-    return true;
-  }
-
   async function syncCurrentUser() {
     try {
       const userId = currentAuthUser.uid;
-      const userRef = db.collection("users").doc(userId);
-      const doc = await userRef.get();
+      const userRef = collection("users").doc(userId);
+      const docSnap = await userRef.get();
 
       let userData = {
         id: userId,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       };
 
-      if (doc.exists) {
-        const docData = doc.data();
+      if (docSnap.exists) {
+        const docData = docSnap.data();
         userData = { ...userData, ...docData };
       } else {
         userData = {
@@ -198,12 +210,11 @@ const Firebase = (() => {
 
   async function getUser(userId) {
     try {
-      const userRef = db.collection("users").doc(userId);
-      const doc = await userRef.get();
+      const docSnap = await collection("users").doc(userId).get();
 
-      if (doc.exists) {
-        const docData = doc.data();
-        const user = { id: doc.id, ...docData };
+      if (docSnap.exists) {
+        const docData = docSnap.data();
+        const user = { id: docSnap.id, ...docData };
 
         return user;
       }
@@ -215,7 +226,7 @@ const Firebase = (() => {
   }
 
   function loadUser(userId, onLoaded) {
-    const userRef = db.collection("users").doc(userId);
+    const userRef = collection("users").doc(userId);
 
     if (unsubscribe[`user${userId}`]) unsubscribe[`user${userId}`]();
     unsubscribe[`user${userId}`] = userRef.onSnapshot(
@@ -233,7 +244,7 @@ const Firebase = (() => {
 
   function loadCurrentUser() {
     const userId = currentUser.id;
-    const userRef = db.collection("users").doc(userId);
+    const userRef = collection("users").doc(userId);
 
     if (unsubscribe.currentUser) unsubscribe.currentUser();
     unsubscribe.currentUser = userRef.onSnapshot(
@@ -252,8 +263,7 @@ const Firebase = (() => {
 
   function loadUsers(onLoaded) {
     if (unsubscribe.users) unsubscribe.users();
-    unsubscribe.users = db
-      .collection("users")
+    unsubscribe.users = collection("users")
       .orderBy("timestamp", "desc")
       .limit(10)
       .onSnapshot(
@@ -270,7 +280,7 @@ const Firebase = (() => {
   }
 
   async function setUser(userId, data) {
-    const userRef = db.collection("users").doc(userId);
+    const userRef = collection("users").doc(userId);
 
     const { avatarFile, bannerFile, ...userData } = data;
     let avatarUrl = avatarFile ? await Supabase.uploadFile(avatarFile, userId, "avatar.png") : null;
@@ -295,7 +305,7 @@ const Firebase = (() => {
   }
 
   async function isUserFollowed(followerId, followingId) {
-    const followsQS = await db.collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
+    const followsQS = await collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
     if (followsQS.empty) return false;
     return true;
   }
@@ -303,9 +313,9 @@ const Firebase = (() => {
   async function followUser(followerId, followingId) {
     try {
       let followMode = true;
-      const followingRef = db.collection("users").doc(followingId);
+      const followingRef = collection("users").doc(followingId);
 
-      const followsQS = await db.collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
+      const followsQS = await collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
 
       const batch = db.batch();
 
@@ -315,7 +325,7 @@ const Firebase = (() => {
         followMode = false;
       } else {
         // Follow
-        const followRef = db.collection("follows").doc();
+        const followRef = collection("follows").doc();
         batch.set(followRef, {
           followerId: followerId,
           followingId: followingId,
@@ -336,11 +346,11 @@ const Firebase = (() => {
   }
 
   async function deleteUser(userId) {
-    const userRef = db.collection("users").doc(userId);
+    const userRef = collection("users").doc(userId);
 
     try {
       // Query and delete all data associated with this user
-      const postsQS = await db.collection("posts").where("authorId", "==", userId).get();
+      const postsQS = await collection("posts").where("authorId", "==", userId).get();
 
       const batch = db.batch();
 
@@ -358,6 +368,8 @@ const Firebase = (() => {
       // Delete the user from Firebase Authentication
       await auth.currentUser.delete();
 
+      await Supabase.removeFolder(userId);
+
       notify("User deleted successfully.");
     } catch (error) {
       handleError(error);
@@ -365,7 +377,7 @@ const Firebase = (() => {
   }
 
   function loadPosts(authorId, onLoaded) {
-    let postsRef = db.collection("posts");
+    let postsRef = collection("posts");
 
     if (authorId) {
       postsRef = postsRef.where("authorId", "==", authorId);
@@ -397,8 +409,7 @@ const Firebase = (() => {
         imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
       }
 
-      const postRef = await db
-        .collection("posts")
+      const postRef = await collection("posts")
         .doc(id)
         .set({
           content: postData.content,
@@ -417,12 +428,11 @@ const Firebase = (() => {
 
   async function getPost(postId) {
     try {
-      const postRef = db.collection("posts").doc(postId);
-      const doc = await postRef.get();
+      const docSnap = await collection("posts").doc(postId).get();
 
-      if (doc.exists) {
-        const docData = doc.data();
-        const post = { id: doc.id, ...docData };
+      if (docSnap.exists) {
+        const docData = docSnap.data();
+        const post = { id: docSnap.id, ...docData };
 
         return post;
       }
@@ -434,16 +444,16 @@ const Firebase = (() => {
   }
 
   async function setPost(postId, data) {
-    const postRef = db.collection("posts").doc(postId);
-
     try {
-      await postRef.set(
-        {
-          ...data,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true },
-      );
+      await collection("posts")
+        .doc(postId)
+        .set(
+          {
+            ...data,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
 
       notify("Post updated successfully.");
     } catch (error) {
@@ -453,13 +463,13 @@ const Firebase = (() => {
 
   async function reactPost(postId, reactType) {
     const userId = currentUser.id;
-    const postRef = db.collection("posts").doc(postId);
+    const postRef = collection("posts").doc(postId);
 
     try {
-      const reactionsQS = await db.collection("reactions").where("postId", "==", postId).where("userId", "==", userId).get();
+      const reactionsQS = await collection("reactions").where("postId", "==", postId).where("userId", "==", userId).get();
 
       const existingDoc = !reactionsQS.empty ? reactionsQS.docs[0] : null;
-      const reactionRef = existingDoc ? existingDoc.ref : db.collection("reactions").doc();
+      const reactionRef = existingDoc ? existingDoc.ref : collection("reactions").doc();
       const prevReactType = existingDoc ? existingDoc.data().type : null;
 
       const batch = db.batch();
@@ -496,15 +506,15 @@ const Firebase = (() => {
 
   async function countPostShare(postId) {
     const userId = currentUser.id;
-    const postRef = db.collection("posts").doc(postId);
+    const postRef = collection("posts").doc(postId);
 
     try {
-      const sharesQS = await db.collection("shares").where("postId", "==", postId).where("userId", "==", userId).get();
+      const sharesQS = await collection("shares").where("postId", "==", postId).where("userId", "==", userId).get();
 
       // If a share record already exists for this user and post, exit early
       if (!sharesQS.empty) return;
 
-      const shareRef = db.collection("shares").doc();
+      const shareRef = collection("shares").doc();
       const batch = db.batch();
 
       batch.set(shareRef, {
@@ -529,8 +539,8 @@ const Firebase = (() => {
     try {
       const batch = db.batch();
 
-      const postRef = db.collection("posts").doc(postId);
-      const commentRef = db.collection("comments").doc();
+      const postRef = collection("posts").doc(postId);
+      const commentRef = collection("comments").doc();
 
       batch.set(commentRef, {
         postId: postId,
@@ -556,14 +566,14 @@ const Firebase = (() => {
 
   async function deletePost(postId) {
     try {
-      const postRef = db.collection("posts").doc(postId);
+      const postRef = collection("posts").doc(postId);
       const batch = db.batch();
 
       // Query and delete documents in root collections where postId matches
       const [commentsQS, reactionsQS, sharesQS] = await Promise.all([
-        db.collection("comments").where("postId", "==", postId).get(),
-        db.collection("reactions").where("postId", "==", postId).get(),
-        db.collection("shares").where("postId", "==", postId).get(),
+        collection("comments").where("postId", "==", postId).get(),
+        collection("reactions").where("postId", "==", postId).get(),
+        collection("shares").where("postId", "==", postId).get(),
       ]);
 
       commentsQS.docs.forEach((doc) => batch.delete(doc.ref));
@@ -576,7 +586,7 @@ const Firebase = (() => {
       // Commit all deletions in a single batch
       await batch.commit();
 
-      await Supabase.removeFile(postId, "post-image.png");
+      await Supabase.removeFolder(postId);
 
       notify("Post deleted successfully.");
     } catch (error) {
@@ -586,8 +596,7 @@ const Firebase = (() => {
 
   function loadComments(postId, onLoaded) {
     if (unsubscribe.comments) unsubscribe.comments();
-    unsubscribe.comments = db
-      .collection("comments")
+    unsubscribe.comments = collection("comments")
       .where("postId", "==", postId)
       .orderBy("timestamp", "desc")
       .onSnapshot(
@@ -605,13 +614,13 @@ const Firebase = (() => {
 
   async function reactComment(commentId, reactType) {
     const userId = currentUser.id;
-    const commentRef = db.collection("comments").doc(commentId);
+    const commentRef = collection("comments").doc(commentId);
 
     try {
-      const reactionsQS = await db.collection("reactions").where("commentId", "==", commentId).where("userId", "==", userId).get();
+      const reactionsQS = await collection("reactions").where("commentId", "==", commentId).where("userId", "==", userId).get();
 
       const existingDoc = !reactionsQS.empty ? reactionsQS.docs[0] : null;
-      const reactionRef = existingDoc ? existingDoc.ref : db.collection("reactions").doc();
+      const reactionRef = existingDoc ? existingDoc.ref : collection("reactions").doc();
       const prevReactType = existingDoc ? existingDoc.data().type : null;
 
       const batch = db.batch();

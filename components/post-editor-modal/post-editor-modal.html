@@ -1,6 +1,6 @@
-<div class="create-post-modal modal hidden" onclick="CreatePostModal.toggle()">
+<div class="post-editor-modal modal hidden" onclick="PostEditorModal.close()">
   <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="close-btn" onclick="CreatePostModal.toggle()">
+    <button class="close-btn" onclick="PostEditorModal.close()">
       <i class="bi bi-x-lg"></i>
     </button>
     <div class="modal-title">Create post</div>
@@ -17,7 +17,7 @@
         <img src="/assets/images/post-image.png">
         <div class="actions">
           <button class="circle-btn"><i class="bi bi-pencil"></i></button>
-          <button class="circle-btn" onclick="CreatePostModal.clearImage()"><i class="bi bi-x-lg"></i></button>
+          <button class="circle-btn" onclick="PostEditorModal.clearImage()"><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
 
@@ -31,7 +31,7 @@
     </div>
 
     <div class="modal-actions">
-      <button class="button" onclick="CreatePostModal.createPost()">Post</button>
+      <button class="button" onclick="PostEditorModal.createPost()">Post</button>
     </div>
   </div>
 </div>

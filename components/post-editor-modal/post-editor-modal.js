@@ -1,16 +1,33 @@
-const CreatePostModal = (() => {
+const PostEditorModal = (() => {
   let element;
+  let titleEl;
   let contentInput;
   let imageInput;
   let imagePreview;
 
   async function init() {
-    element = await replaceElement("create-post-modal");
+    element = await replaceElement("post-editor-modal");
+    titleEl = element.querySelector(".modal-title");
     contentInput = element.querySelector(".content-input");
     imageInput = element.querySelector(".image-input input");
     imagePreview = element.querySelector(".image-preview");
 
     imageInput.onchange = updateImagePreview;
+  }
+
+  function open(postId) {
+    if (postId) {
+      titleEl.textContent = `Edit post`;
+    } else {
+      titleEl.textContent = `Create post`;
+    }
+
+    element.classList.toggle("hidden", false);
+  }
+
+  function close() {
+    clear();
+    element.classList.toggle("hidden", true);
   }
 
   async function createPost() {
@@ -33,13 +50,8 @@ const CreatePostModal = (() => {
     await Firebase.createPost(data);
 
     clear();
-    toggle();
+    close();
     loading(false);
-  }
-
-  function toggle() {
-    clear();
-    element.classList.toggle("hidden");
   }
 
   function clear() {
@@ -61,5 +73,5 @@ const CreatePostModal = (() => {
     imagePreview.classList.toggle("hidden", !file);
   }
 
-  return { init, toggle, createPost, clearImage };
+  return { init, open, close, createPost, clearImage };
 })();

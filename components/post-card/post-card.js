@@ -36,6 +36,9 @@ const PostCard = (() => {
                 <i class="bi bi-share"></i>
                 <span>${post.shareCount || 0}</span>
               </button>
+              <button class="${!isOwner ? "hidden" : ""}" onclick="PostEditorModal.open('${post.id}')">
+                <i class="bi bi-pencil"></i>
+              </button>
               <button class="${!isOwner ? "hidden" : ""}" onclick="PostCard.deletePost('${post.id}')">
                 <i class="bi bi-trash"></i>
               </button>

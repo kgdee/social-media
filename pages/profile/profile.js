@@ -1,3 +1,4 @@
+const profileBanner = document.querySelector(".profile-banner");
 const profileDisplay = document.querySelector(".profile-display");
 const postList = document.querySelector(".post-list");
 const msgOverlay = document.querySelector(".msg-overlay");
@@ -8,7 +9,7 @@ let currentPosts = [];
 
 async function initPage() {
   await loadResources(RESOURCES.profile);
-  for (const component of [Navbar, CreatePostModal, PostModal, ProfileModal, ConfirmModal, MenuModal, SettingsModal]) {
+  for (const component of [Navbar, PostEditorModal, PostModal, ProfileModal, ConfirmModal, MenuModal, SettingsModal]) {
     await component.init();
   }
 
@@ -67,6 +68,14 @@ function renderPosts(posts) {
 
 async function updatePageUI() {
   const isUserFollowed = await Firebase.isUserFollowed(currentUser.id, targetUser.id);
+
+  profileBanner.innerHTML = `
+    <img class="self-banner" src="${getFreshUrl(currentUser.bannerUrl) || "/assets/images/post-image.png"}" />
+    <label class="banner-input circle-btn${isOwner ? "" : " hidden"}">
+      <i class="bi bi-pencil"></i>
+      <input type="file" accept="image/*" onchange="updateUserBanner(this.files[0])" hidden />
+    </label>
+  `;
 
   profileDisplay.innerHTML = `
     ${createAvatarHTML(targetUser)}
