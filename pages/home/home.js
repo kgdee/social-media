@@ -1,7 +1,5 @@
 const postList = document.querySelector(".post-list");
 
-let currentPosts = [];
-
 async function initPage() {
   await loadResources(RESOURCES.home);
 
@@ -15,8 +13,6 @@ async function initPage() {
   await checkUrl();
 
   updateUI();
-
-  await Firebase.getPost("e672eda9386d5807df2214ad0799dd6c");
 }
 
 async function checkUrl() {
@@ -28,24 +24,16 @@ async function checkUrl() {
 
     await Firebase.countPostShare(post.id);
 
-    await PostModal.open(post.authorId, post.id);
+    await PostModal.open(post.authorId, post.id, true);
   }
 
   // 2. Immediately reset address bar back to base URL without reloading
   window.history.replaceState({}, "", window.location.pathname);
 }
 
-function getPost(postId) {
-  return currentPosts.filter((post) => post.id === postId)[0];
-}
-
-function setPosts(posts) {
+function onPostsLoaded(posts) {
   currentPosts = posts;
   renderPosts();
-}
-
-function onPostsLoaded(posts) {
-  setPosts(posts);
   PostModal.refresh();
 }
 

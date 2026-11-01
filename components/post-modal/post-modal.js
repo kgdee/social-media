@@ -19,20 +19,22 @@ const PostModal = (() => {
     postCardContainer.innerHTML = PostCard.createHTML(currentPost);
   }
 
-  async function open(authorId, postId) {
-    if (isLoading) return;
-    loading(true);
-    currentPost = getPost(postId) || (await Firebase.getPost(postId));
-    const author = await Firebase.getUser(authorId);
-    
-    titleEl.textContent = `${getUserName(author)}'s post`;
+  async function open(authorId, postId, force = false) {
+    await withLoading(
+      async () => {
+        currentPost = getPost(postId);
+        const author = await Firebase.getUser(authorId);
 
-    refresh();
+        titleEl.textContent = `${getUserName(author)}'s post`;
 
-    await CommentsSection.loadComments(currentPost.id);
+        refresh();
 
-    element.classList.toggle("hidden", false);
-    loading(false);
+        await CommentsSection.loadComments(currentPost.id);
+
+        element.classList.toggle("hidden", false);
+      },
+      { isDisabled: force },
+    );
   }
 
   function close() {

@@ -89,6 +89,7 @@ textarea {
   background-color: var(--color-bg);
   color: var(--color-text);
   border-radius: 4px;
+  min-width: 0;
 }
 
 textarea {
@@ -170,6 +171,7 @@ textarea {
 .title,
 .name {
   flex-shrink: 0;
+  max-width: 90vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

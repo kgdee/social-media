@@ -14,33 +14,29 @@ const ProfileModal = (() => {
   }
 
   async function updateUser() {
-    if (isLoading) return;
-    loading(true);
+    await withLoading(async () => {
+      const data = {
+        name: nameInput.value,
+        avatarFile: avatarInput.files[0],
+        bio: bioInput.value,
+      };
 
-    const data = {
-      name: nameInput.value,
-      avatarFile: avatarInput.files[0],
-      bio: bioInput.value,
-    };
+      await Firebase.setUser(currentUser.id, data);
 
-    await Firebase.setUser(currentUser.id, data);
-
-    close();
-    loading(false);
+      close();
+    });
   }
 
   async function open() {
-    if (isLoading) return;
-    loading(true);
+    await withLoading(async () => {
+      const user = (await Firebase.getUser(currentUser.id)) || currentUser;
 
-    const user = (await Firebase.getUser(currentUser.id)) || currentUser;
+      avatarPreview.src = getAvatarUrl(user) || "/assets/images/default-avatar.jpg";
+      nameInput.value = user?.name || "";
+      bioInput.value = user?.bio || "";
 
-    avatarPreview.src = getAvatarUrl(user) || "/assets/images/default-avatar.jpg";
-    nameInput.value = user?.name || "";
-    bioInput.value = user?.bio || "";
-
-    element.classList.toggle("hidden", false);
-    loading(false);
+      element.classList.toggle("hidden", false);
+    });
   }
 
   function close() {

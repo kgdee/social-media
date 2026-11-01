@@ -41,14 +41,12 @@ async function handleAuthAction() {
 async function resetPassword(event) {
   event.preventDefault();
 
-  if (isLoading) return;
-  loading(true);
+  await withLoading(async () => {
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
 
-  const formData = new FormData(event.target);
-  const data = Object.fromEntries(formData);
+    const succeeded = await Firebase.resetPassword(oobCode, data.newPassword, data.confirmPassword);
 
-  const succeeded = await Firebase.resetPassword(oobCode, data.newPassword, data.confirmPassword);
-
-  if (succeeded) toggleView("reset-password-success");
-  loading(false);
+    if (succeeded) toggleView("reset-password-success");
+  });
 }

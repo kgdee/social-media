@@ -2,11 +2,6 @@
   :scope {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-
-  .feed-container {
-    overflow-y: auto;
   }
 
   .feed-card {
@@ -46,6 +41,7 @@
     }
 
     .icon {
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,6 +81,15 @@
       display: flex;
       gap: 5px;
       overflow-x: auto;
+      min-height: 100px;
+    }
+
+    .item-list .msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--color-text-muted);
     }
 
     .item-list .item {

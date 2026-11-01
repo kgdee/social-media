@@ -4,7 +4,7 @@ const PostCard = (() => {
     const authorName = getUserName(post);
     const timeString = formatTime(post.timestamp);
     const content = escapeHTML(post.content);
-    const imageUrl = escapeHTML(post.imageUrl);
+    const imageUrl = getFreshUrl(post.imageUrl);
 
     return `
           <div class="post-card">
@@ -48,10 +48,9 @@ const PostCard = (() => {
   }
 
   async function reactPost(postId, type) {
-    if (isLoading) return;
-    loading(true);
-    await Firebase.reactPost(postId, type);
-    loading(false);
+    await withLoading(async () => {
+      await Firebase.reactPost(postId, type);
+    });
   }
 
   async function sharePost(postId) {

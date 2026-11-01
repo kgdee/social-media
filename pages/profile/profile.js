@@ -1,11 +1,10 @@
 const profileBanner = document.querySelector(".profile-banner");
-const profileDisplay = document.querySelector(".profile-display");
+const profileCard = document.querySelector(".profile-card");
 const postList = document.querySelector(".post-list");
 const msgOverlay = document.querySelector(".msg-overlay");
 
 let targetUser = null;
 let isOwner = false;
-let currentPosts = [];
 
 async function initPage() {
   await loadResources(RESOURCES.profile);
@@ -28,7 +27,7 @@ async function checkUrl() {
 
     Firebase.loadUser(user.id, onUserLoaded);
   } else {
-    changePage("home");
+    navigate("home");
   }
 }
 
@@ -43,16 +42,10 @@ function onUserLoaded(user) {
 
 async function updateUserBanner(file) {
   if (!file) return;
-  if (isLoading) return;
-  loading(true);
 
-  await Firebase.setUser(currentUser.id, { bannerFile: file });
-
-  loading(false);
-}
-
-function getPost(postId) {
-  return currentPosts.filter((post) => post.id === postId)[0];
+  await withLoading(async () => {
+    await Firebase.setUser(currentUser.id, { bannerFile: file });
+  });
 }
 
 function onPostsLoaded(posts) {
@@ -70,19 +63,21 @@ async function updatePageUI() {
   const isUserFollowed = await Firebase.isUserFollowed(currentUser.id, targetUser.id);
 
   profileBanner.innerHTML = `
-    <img class="self-banner" src="${getFreshUrl(currentUser.bannerUrl) || "/assets/images/post-image.png"}" />
+    <img src="${getFreshUrl(targetUser.bannerUrl) || "/assets/images/post-image.png"}" />
     <label class="banner-input circle-btn${isOwner ? "" : " hidden"}">
       <i class="bi bi-pencil"></i>
       <input type="file" accept="image/*" onchange="updateUserBanner(this.files[0])" hidden />
     </label>
   `;
 
-  profileDisplay.innerHTML = `
-    ${createAvatarHTML(targetUser)}
-    <div class="info">
-      <div class="name">${escapeHTML(getUserName(targetUser))}</div>
-      <div class="subtitle">${targetUser?.followCount || 0} followers</div>
-      <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
+  profileCard.innerHTML = `
+    <div class="details">
+      ${createAvatarHTML(targetUser)}
+      <div class="info">
+        <div class="name">${escapeHTML(getUserName(targetUser))}</div>
+        <div class="subtitle">${targetUser?.followCount || 0} followers</div>
+        <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
+      </div>
     </div>
     <div class="actions">
       <button class="button${isOwner ? " hidden" : ""}">Message</button>

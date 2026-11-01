@@ -41,8 +41,9 @@
     align-items: center;
     gap: 5px;
     flex-grow: 0;
-    background-color: transparent;
     font-size: 1.1rem;
+    background-color: transparent;
+    color: var(--color-text);
   }
 
   .comment-input {

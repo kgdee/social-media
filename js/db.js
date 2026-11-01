@@ -282,17 +282,20 @@ const Firebase = (() => {
   async function setUser(userId, data) {
     const userRef = collection("users").doc(userId);
 
-    const { avatarFile, bannerFile, ...userData } = data;
-    let avatarUrl = avatarFile ? await Supabase.uploadFile(avatarFile, userId, "avatar.png") : null;
-    let bannerUrl = bannerFile ? await Supabase.uploadFile(bannerFile, userId, "banner.png") : null;
+    let { avatarFile, bannerFile, ...userData } = data;
+
+    if (avatarFile) {
+      userData.avatarUrl = await Supabase.uploadFile(avatarFile, userId, "avatar.png");
+    }
+    if (bannerFile) {
+      userData.bannerUrl = await Supabase.uploadFile(bannerFile, userId, "banner.png");
+    }
 
     try {
       // 3. Save user data and avatar URL to Firebase Firestore
       await userRef.set(
         {
           ...userData,
-          ...(avatarUrl ? { avatarUrl } : {}),
-          ...(bannerUrl ? { bannerUrl } : {}),
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         },
         { merge: true },
@@ -409,10 +412,10 @@ const Firebase = (() => {
         imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
       }
 
-      const postRef = await collection("posts")
+      await collection("posts")
         .doc(id)
         .set({
-          content: postData.content,
+          content: postData.content || "",
           ...(imageUrl ? { imageUrl } : {}),
           authorId: currentUser.id,
           authorName: getUserName(),
@@ -443,13 +446,19 @@ const Firebase = (() => {
     }
   }
 
-  async function setPost(postId, data) {
+  async function setPost(id, data) {
     try {
+      const { imageFile, ...postData } = data;
+
+      if (imageFile) {
+        postData.imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
+      }
+
       await collection("posts")
-        .doc(postId)
+        .doc(id)
         .set(
           {
-            ...data,
+            ...postData,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           },
           { merge: true },

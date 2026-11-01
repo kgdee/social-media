@@ -23,7 +23,7 @@
   </head>
   <body>
     <div class="app container auth-action-page">
-      <img src="/assets/images/logo.png" class="logo" onclick="changePage()" />
+      <img src="/assets/images/logo.png" class="logo" onclick="navigate()" />
 
       <div class="auth-section">
         <div class="view loading">Loading...</div>
@@ -37,7 +37,7 @@
             <button type="submit" class="button">Change password</button>
           </form>
 
-          <div class="acc-link" onclick="changePage('login')">Remember password? <span>Log in</span></div>
+          <div class="acc-link" onclick="navigate('login')">Remember password? <span>Log in</span></div>
         </div>
 
         <div class="view auth-wrapper reset-password-success hidden">
@@ -49,7 +49,7 @@
 
           <div class="notice"><strong>Security Alert:</strong> You can now use your new password to sign in. If you did not request this change, please contact support immediately.</div>
 
-          <button class="button" onclick="changePage('login')">Proceed to Login</button>
+          <button class="button" onclick="navigate('login')">Proceed to Login</button>
         </div>
 
         <div class="view auth-wrapper verify-email hidden">
@@ -61,7 +61,7 @@
 
           <div class="notice"><strong>Account Activated:</strong> You can now access all features requiring a verified email address.</div>
 
-          <button class="button" onclick="changePage('login')">Proceed to Login</button>
+          <button class="button" onclick="navigate('login')">Proceed to Login</button>
         </div>
 
         <div class="view auth-wrapper recover-email hidden">
@@ -73,7 +73,7 @@
 
           <div class="notice"><strong>Security Notice:</strong> If you did not initiate an email address change, your account credentials may be compromised.</div>
 
-          <button class="button" onclick="changePage('login')">Proceed to Login</button>
+          <button class="button" onclick="navigate('login')">Proceed to Login</button>
         </div>
 
         <div class="view auth-wrapper invalid hidden">
@@ -87,7 +87,7 @@
             <p>Action codes expire automatically after a set period or after being consumed once.</p>
           </div>
 
-          <button class="button" onclick="changePage('login')">Proceed to Login</button>
+          <button class="button" onclick="navigate('login')">Proceed to Login</button>
         </div>
 
         <div class="credit-display">

@@ -44,22 +44,17 @@ const CommentsSection = (() => {
   }
 
   async function commentPost() {
-    if (isLoading) return;
-    loading(true);
-
-    const data = { text: textInput.value };
-    await Firebase.commentPost(currentPostId, data);
-    textInput.value = "";
-    loading(false);
+    await withLoading(async () => {
+      const data = { text: textInput.value };
+      await Firebase.commentPost(currentPostId, data);
+      textInput.value = "";
+    });
   }
 
   async function reactComment(commentId, reactType) {
-    if (isLoading) return;
-    loading(true);
-
-    await Firebase.reactComment(commentId, reactType);
-
-    loading(false);
+    await withLoading(async () => {
+      await Firebase.reactComment(commentId, reactType);
+    });
   }
 
   return { init, loadComments, renderComments, commentPost, reactComment };

@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 let isLoading = false;
 let currentUser = null;
+let currentPosts = [];
 let currentSettings = load("currentSettings", {
   privateAccount: false,
   notifications: true,
@@ -36,14 +37,14 @@ async function onAuthStateChanged(user) {
   loadingWithOverlay(false);
 }
 
-function changePage(name, params = "") {
+function navigate(name, params = "") {
   if (!name) {
     window.location.href = "/";
     return;
   }
   const isAuth = ["signup", "login", "password-reset", "action"].includes(name);
   const targetPath = `/pages/${isAuth ? "auth" : name}/${name}.html`;
-  if (window.location.pathname.includes(targetPath)) return;
+  // if (window.location.pathname.includes(targetPath)) return;
   window.location.href = `${targetPath}${params}`;
 }
 
@@ -54,7 +55,7 @@ function protectPage() {
   // If the user is logged in, do nothing—let them stay anywhere.
   // If they are NOT logged in and NOT on a public page, redirect to login.
   if (!currentAuthUser && !publicPages.some((item) => currentPath.includes(`/${item}.html`))) {
-    changePage("login");
+    navigate("login");
     return false;
   }
   return true;
@@ -67,6 +68,26 @@ function loading(state = true) {
 function loadingWithOverlay(state = true) {
   isLoading = state;
   LoadingOverlay.toggle(state);
+}
+
+async function withLoading(action, { shouldShow = false, isDisabled = false } = {}) {
+  if (!isDisabled) {
+    if (isLoading) return;
+  }
+
+  try {
+    if (!isDisabled) {
+      loading(true);
+      if (shouldShow) LoadingOverlay.toggle(true);
+    }
+
+    return await action();
+  } finally {
+    if (!isDisabled) {
+      loading(false);
+      if (shouldShow) LoadingOverlay.toggle(false);
+    }
+  }
 }
 
 function updateUI() {
@@ -119,7 +140,11 @@ function createAvatarHTML(data, isOuter = true) {
 
 function goToProfilePage(userId) {
   userId = userId || currentUser.id;
-  changePage("profile", `?user_id=${userId}`);
+  navigate("profile", `?user_id=${userId}`);
+}
+
+function getPost(postId) {
+  return structuredClone(currentPosts.filter((post) => post.id === postId)[0]);
 }
 
 function toggleSetting(name, force) {
@@ -129,17 +154,15 @@ function toggleSetting(name, force) {
 }
 
 async function logout() {
-  if (isLoading) return;
-  loading(true);
-  await Firebase.logout();
-  loading(false);
+  await withLoading(async () => {
+    await Firebase.logout();
+  })
 }
 
 async function followUser(userId) {
-  if (isLoading) return;
-  loading(true);
-  await Firebase.followUser(currentUser.id, userId);
-  loading(false);
+  await withLoading(async () => {
+    await Firebase.followUser(currentUser.id, userId);
+  })
 }
 
 async function deleteAccount() {
