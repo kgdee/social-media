@@ -88,12 +88,12 @@
     justify-content: center;
   }
 
-  .login-btn {
+  .oauth-btn {
     color: var(--color-text);
     background-color: var(--color-surface);
   }
 
-  .login-btn img {
+  .oauth-btn img {
     width: 32px;
     aspect-ratio: 1;
   }

@@ -75,7 +75,7 @@ async function updatePageUI() {
       ${createAvatarHTML(targetUser)}
       <div class="info">
         <div class="name">${escapeHTML(getUserName(targetUser))}</div>
-        <div class="subtitle">${targetUser?.followCount || 0} followers</div>
+        <div class="subtitle">${formatQuantity(targetUser?.followerCount || 0, "follower")}</div>
         <p class="bio">${escapeHTML(targetUser?.bio) || "No bio"}</p>
       </div>
     </div>

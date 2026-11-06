@@ -1,38 +1,68 @@
 const Supabase = (() => {
-  const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+  let supabase;
   const bucketName = "files";
   const basePath = `projects/${PROJECT_NAME}`;
 
-  async function uploadFile(file, id, fileName) {
-    const filePath = `${basePath}/${id}/${fileName}`;
+  function init() {
+    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+      accessToken: async () => {
+        if (!currentAuthUser) return null;
 
-    await supabase.storage.from(bucketName).upload(filePath, file, { upsert: true });
-
-    // Get the Public URL of the uploaded image
-    const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(filePath);
-
-    const uploadedFileUrl = publicUrlData.publicUrl;
-    console.log("File uploaded successfully.");
-    return uploadedFileUrl;
+        // Get the fresh Firebase JWT
+        return await currentAuthUser.getIdToken();
+      },
+    });
   }
 
-  async function removeFile(id, fileName) {
-    const filePath = `${basePath}/${id}/${fileName}`;
+  async function uploadFile(file, path) {
+    try {
+      path = `${basePath}/${currentUser.id}${path}`;
 
-    await supabase.storage.from(bucketName).remove([filePath]);
+      const { data: uploadData, error: uploadError } = await supabase.storage.from(bucketName).upload(path, file, { upsert: true });
 
-    console.log("File removed successfully.");
+      if (uploadError) throw new Error(uploadError.message);
+
+      // Get the Public URL of the uploaded file
+      const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(path);
+
+      console.log("Supabase: File uploaded successfully.");
+      return publicUrlData.publicUrl;
+    } catch (error) {
+      handleError(error);
+    }
   }
 
-  async function removeFolder(id) {
-    const folderPath = `${basePath}/${id}`;
+  async function removeFile(path = "") {
+    try {
+      path = `${basePath}/${currentUser.id}${path}`;
 
-    await supabase.storage.from(bucketName).remove([folderPath]);
+      const { data: removeData, error: removeError } = await supabase.storage.from(bucketName).remove([path]);
 
-    console.log("Folder removed successfully.");
+      if (removeError) throw new Error(removeError.message);
+
+      console.log("Supabase: File removed successfully.");
+    } catch (error) {
+      handleError(error);
+    }
   }
 
-  return { uploadFile, removeFile, removeFolder };
+  async function deleteStorageItem(path = "") {
+    try {
+      path = `${basePath}/${currentUser.id}${path}`;
+
+      await SupabaseUtils.deleteStorageItem(supabase, bucketName, path);
+
+      console.log("Supabase: Storage item deleted successfully.");
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  return { init, uploadFile, deleteStorageItem };
 })();
 
 const Firebase = (() => {
@@ -109,7 +139,7 @@ const Firebase = (() => {
       } else {
         userData = {
           ...userData,
-          name: currentAuthUser.displayName || getRandomItem(USERNAMES),
+          name: currentAuthUser.displayName || generateUserName(userId),
           email: currentAuthUser.email,
         };
       }
@@ -285,10 +315,10 @@ const Firebase = (() => {
     let { avatarFile, bannerFile, ...userData } = data;
 
     if (avatarFile) {
-      userData.avatarUrl = await Supabase.uploadFile(avatarFile, userId, "avatar.png");
+      userData.avatarUrl = await Supabase.uploadFile(avatarFile, "/profile/avatar.png");
     }
     if (bannerFile) {
-      userData.bannerUrl = await Supabase.uploadFile(bannerFile, userId, "banner.png");
+      userData.bannerUrl = await Supabase.uploadFile(bannerFile, "/profile/banner.png");
     }
 
     try {
@@ -316,6 +346,7 @@ const Firebase = (() => {
   async function followUser(followerId, followingId) {
     try {
       let followMode = true;
+      const followerRef = collection("users").doc(followerId);
       const followingRef = collection("users").doc(followingId);
 
       const followsQS = await collection("follows").where("followerId", "==", followerId).where("followingId", "==", followingId).get();
@@ -336,8 +367,12 @@ const Firebase = (() => {
         });
       }
 
+      batch.update(followerRef, {
+        followingCount: firebase.firestore.FieldValue.increment(followMode ? 1 : -1),
+      });
+
       batch.update(followingRef, {
-        followCount: firebase.firestore.FieldValue.increment(followMode ? 1 : -1),
+        followerCount: firebase.firestore.FieldValue.increment(followMode ? 1 : -1),
       });
 
       await batch.commit();
@@ -371,7 +406,7 @@ const Firebase = (() => {
       // Delete the user from Firebase Authentication
       await auth.currentUser.delete();
 
-      await Supabase.removeFolder(userId);
+      await Supabase.deleteStorageItem();
 
       notify("User deleted successfully.");
     } catch (error) {
@@ -409,16 +444,16 @@ const Firebase = (() => {
 
       let imageUrl = null;
       if (imageFile) {
-        imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
+        imageUrl = await Supabase.uploadFile(imageFile, `/posts/${id}/image.png`);
       }
 
       await collection("posts")
         .doc(id)
         .set({
-          content: postData.content || "",
-          ...(imageUrl ? { imageUrl } : {}),
           authorId: currentUser.id,
           authorName: getUserName(),
+          content: postData.content || "",
+          ...(imageUrl ? { imageUrl } : {}),
           avatarUrl: getUserAvatarUrl(),
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         });
@@ -451,7 +486,7 @@ const Firebase = (() => {
       const { imageFile, ...postData } = data;
 
       if (imageFile) {
-        postData.imageUrl = await Supabase.uploadFile(imageFile, id, "post-image.png");
+        postData.imageUrl = await Supabase.uploadFile(imageFile, `/posts/${id}/image.png`);
       }
 
       await collection("posts")
@@ -595,7 +630,7 @@ const Firebase = (() => {
       // Commit all deletions in a single batch
       await batch.commit();
 
-      await Supabase.removeFolder(postId);
+      await Supabase.deleteStorageItem(`/posts/${postId}`);
 
       notify("Post deleted successfully.");
     } catch (error) {
@@ -665,6 +700,7 @@ const Firebase = (() => {
   }
 
   return {
+    auth,
     init,
     syncCurrentUser,
     login,

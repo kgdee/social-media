@@ -158,6 +158,10 @@ textarea {
     text-overflow: ellipsis;
   }
 
+  .modal-body {
+    overflow-y: auto;
+  }
+
   .modal-actions {
     display: flex;
     gap: 5px;
